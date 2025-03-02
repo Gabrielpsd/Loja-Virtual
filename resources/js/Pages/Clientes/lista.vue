@@ -44,31 +44,6 @@ export default {
         }
     },
     methods:{
-        CadastrarCliente(){
-
-        },
-        deletaPessoa(arg)
-        {
-            this.listaFiltrada = this.pessoasData.map((pessoa)=>{
-                if(pessoa.id === arg)
-                {
-                  pessoa.ativado = false  
-                }
-
-                return pessoa
-            })
-        },
-        ativarPessoa(arg)
-        {
-            this.listaFiltrada = this.pessoasData.map((pessoa)=>{
-                if(pessoa.id === arg)
-                {
-                  pessoa.ativado = true  
-                }
-
-                return pessoa
-            })
-        },
         geraGraficos(){
 
             this.dadosGraficoPessoasPorSexo={labels: [], data:[], carregado: false, colors: [],key:0}

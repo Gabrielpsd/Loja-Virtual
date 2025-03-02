@@ -1,8 +1,8 @@
 export const BASE_URL = 'http://localhost:8000'
 export const PRODUTOS = `${BASE_URL}/produtos`
 export const PRODUTOSAPI = `${BASE_URL}/api/produtos`
-export const PEDIDOS = `${BASE_URL}/pedidos`
-export const PEDIDOSAPI = `${BASE_URL}/api/pedidos`
+export const VEICULOS = `${BASE_URL}/veiculos`
+export const VEICULOSAPI = `${BASE_URL}/api/veiculos`
 export const FORNECEDORES = `${BASE_URL}/fornecedores`
 export const PESSOAS = `${BASE_URL}/clientes`
 export const PESSOASAPI = `${BASE_URL}/api/clientes`
@@ -20,14 +20,11 @@ export default {
         editar: (idProduto) => `${PRODUTOSAPI}/editar/${idProduto}`,
         remover:(idProduto) => `${PRODUTOSAPI}/remover/${idProduto}`
     },
-    pedidos: {
-        lista: PEDIDOS,
-        criar:`${PEDIDOSAPI}/criarpedido`,
-        excluir:(pedido)=>`${PEDIDOSAPI}/excluir/${pedido}`,
-        detalhe: (pedido) => `${PEDIDOS}/detalhe/${pedido}`,
-        remover: (pedido) => `${PEDIDOSAPI}/removerProdutosPedido/${pedido}`,
-        adicionar: (pedido) => `${PEDIDOSAPI}/inserirProdutos/${pedido}`,
-        editar: (pedido) => `${PEDIDOSAPI}/editarProdutoPedido/${pedido}`,
+    veiculos: {
+        lista: VEICULOS,
+        inserir:`${VEICULOSAPI}/inserir`,
+        detalhe: (pedido) => `${VEICULOS}/detalhe/${pedido}`,
+        editar: (id) => `${VEICULOSAPI}/editar/${id}`,
     },
     marcas: {
         lista: MARCAS,
@@ -35,9 +32,6 @@ export default {
         remover: (idMarca) => `${MARCASAPI}/remover/${idMarca}`,
         adicionar: `${MARCASAPI}/inserir`,
         editar: (idMarca) => `${MARCASAPI}/editar/${idMarca}`,
-    },
-    fornecedores: {
-        lista: FORNECEDORES
     },
     pessoas:{
         lista: PESSOAS,

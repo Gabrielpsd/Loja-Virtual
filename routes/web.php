@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PessoasController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\veiculos_controller;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -42,7 +43,20 @@ Route::middleware('auth')->group(function(){
     Route::get('/clientes', [PessoasController::class, 'index'])->name('Clientes.list');
     Route::post('/api/clientes/inserir', [PessoasController::class, 'inserirPessoa'])->name('Clientes.inserir');
     Route::post('/api/clientes/editar/{id}', [PessoasController::class,'editarPessoa'])->name('Clientes.editars');
+});
 
+//Veiculos
+Route::middleware('auth')->group(function(){
+    Route::get('/veiculos', [veiculos_controller::class, 'index'])->name('Veiculos.list');
+    Route::post('/api/veiculos/inserir', [veiculos_controller::class, 'inserirVeiculo'])->name('Veiculos.inserir');
+    Route::post('/api/veiculos/editar/{id}', [veiculos_controller::class,'editarPessoa'])->name('Veiculos.editar');
+});
+
+//Produtos
+Route::middleware('auth')->group(function(){
+    Route::get('/Produtos', [Produtoscontroller::class, 'index'])->name('Produtos.list');
+    Route::post('/api/Produtos/inserir', [Produtoscontroller::class, 'inserirVeiculo'])->name('Produtos.inserir');
+    Route::post('/api/Produtos/editar/{id}', [Produtoscontroller::class,'editarPessoa'])->name('Produtos.editar');
 });
 
 require __DIR__.'/auth.php';
