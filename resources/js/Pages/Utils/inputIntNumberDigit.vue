@@ -31,7 +31,7 @@
         default: 4,
       },
       label: {
-        type: Text,
+        type: [Text, String],
         default: "Descrição"
       },
       Size: {

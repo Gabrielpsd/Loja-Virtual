@@ -11,7 +11,7 @@ export default{
         default: 100,
         },
         Label: {
-            type: Text,
+            type: [Text, String],
             default: "Preço"
         }
     },

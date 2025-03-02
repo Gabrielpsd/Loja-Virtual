@@ -1,4 +1,9 @@
 <template>
+  <div class="select-container">
+    <!-- Label above the select -->
+    <label :for="label"  v-if="label" class="select-label">{{label}}</label>
+
+    <!-- Select element -->
     <div class="select-list">
       <el-select
         :id="label"
@@ -21,7 +26,7 @@
             Select All
           </el-checkbox>
         </template>
-  
+
         <!-- Options -->
         <el-option
           v-for="option in options"
@@ -31,8 +36,9 @@
         />
       </el-select>
     </div>
-  </template>
-  
+  </div>
+</template>
+
   <script>
   import { ElSelect, ElOption, ElCheckbox } from "element-plus";
   
@@ -79,7 +85,6 @@
     },
     methods: {
       atualizaValor() {
-        console.log(this.selection)
         if(this.selection.length == 0 )
         {
             this.$emit("update:modelValue", null);
@@ -89,7 +94,6 @@
         this.$emit("update:modelValue",this.selection);
       },
       handleCheckAll(val) {
-        console.log("val", val)
         this.indeterminate = false
         if (val) {
           // Select the first option when "Select All" is checked
@@ -109,13 +113,20 @@
   </script>
   
   <style scoped>
-  .select-list {
-    width: 100%;
-    max-width: 250px;
+  .select-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2px; /* Adjust the gap between label and select */
+    font-size: 14px;
   }
   
-  .custom-header .el-checkbox {
-    display: flex;
-    height: unset;
+  .select-label {
+    font-weight: bold; /* Optional: Make the label bold */
+    margin-bottom: px; /* Optional: Add some space below the label */
+  }
+  
+  .select-list {
+    width: 100%; /* Ensure the select takes full width */
+    max-width: 250px; /* Match the select's max-width */
   }
   </style>

@@ -4,8 +4,8 @@ export const PRODUTOSAPI = `${BASE_URL}/api/produtos`
 export const PEDIDOS = `${BASE_URL}/pedidos`
 export const PEDIDOSAPI = `${BASE_URL}/api/pedidos`
 export const FORNECEDORES = `${BASE_URL}/fornecedores`
-export const PESSOAS = `${BASE_URL}/clientesfornecedores`
-export const PESSOASAPI = `${BASE_URL}/api/clientesfornecedores`
+export const PESSOAS = `${BASE_URL}/clientes`
+export const PESSOASAPI = `${BASE_URL}/api/clientes`
 export const MARCAS = `${BASE_URL}/marcas`
 export const MARCASAPI = `${BASE_URL}/api/marcas`
 export const ENTRADAS = `${BASE_URL}/entradas`
@@ -62,7 +62,8 @@ export default {
         produtospormarca: `${DASHBOARD}/produtospormarca`,
     },
     EXTENCOESVALIDAS: ['XML', 'xml', 'Xml'],
-    ROTAARQUIVOS: `${BASE_URL}/api/upload`
+    ROTAARQUIVOS: `${BASE_URL}/api/upload`,
+    DIASMAXIMOS : 43800 // equivale a 120 anos 
     ,
     geraCor(baseColor = "#3498db") {
         // Convert HEX to HSL
@@ -133,5 +134,21 @@ export default {
         firstDayOfWeek: 0, // Sunday as the first day (adjust if needed)
         // Add other properties as required by the library
       },
+
+      calculateAge(birthdate) {
+        // Parse the birthdate string into a Date object
+        const birthDate = new Date(birthdate);
+        
+        // Get the current date
+        const currentDate = new Date();
+        
+        // Calculate the difference in milliseconds
+        const timeDifference = currentDate.getTime() - birthDate.getTime();
+        
+        // Convert milliseconds to days
+        const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        
+        return daysDifference;
+      }
 
 }

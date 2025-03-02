@@ -1,7 +1,9 @@
 <script>
 import rotas from '../Assets/ArquivosConfiguracao/apiconfig'
 import inputIntNumber from '../utils/inputIntNumber.vue'
-
+import datePicker from '../Utils/datePicker.vue'
+import CpfCNPJinput from '../utils/CpfCNPJinput.vue'
+import inputText from '../Utils/inputText.vue'
 export default{
     props:{
         cadastros: Array
@@ -13,45 +15,58 @@ export default{
             dataNascimentoInvalida: false,
             cpf_cnpj: '',
             cpfInvalido: false,
-            sexo: 0,
+            sexo: null,
             dataNascimento: null,
-            locale: rotas.customPtLocale,
-            cpfExistente: false
+            cpfExistente: false,
+            loading: false,
+            sexoInvalido: false
           }
     },
     components:{
         inputIntNumber,
+        datePicker,
+        CpfCNPJinput,
+        inputText
     },
     methods: {
         salvaAlteracoes(){
             if(this.validacoes())
             {
 
-                let obj = this
-                const csrfToken = document.getElementsByName("_token")[0].value
-                var request = new XMLHttpRequest()
-                
-                let pessoa = JSON.stringify({'descricao':this.nome, 
-                                            'fornecedor': false,
-                                            'cpf_cnpj': this.cpf_cnpj.toLowerCase().replace(/\D/g,''),
-                                            'data_nascimento': this.dataNascimento,
-                                            'sexo': this.sexo})
-                request.open('POST',rotas.pessoas.inserirPessoa,true)
-                request.setRequestHeader("Content-Type","application/json")
-                request.setRequestHeader('X-CSRF-TOKEN',csrfToken)
-                
-                request.onload = function(){
-                    if(this.readyState == XMLHttpRequest.DONE)
-                        if(this.status == 200)
-                        {
-                            console.log(this.responseText)
-                            obj.$emit('adicionar',JSON.parse(this.responseText))
+                this.loading= true
+                const csrfToken = document.getElementsByName("_token")[0].value; // Get CSRF token
+
+                    const pessoa = {
+                        nome: this.nome,
+                        data_nascimento: this.dataNascimento,
+                        cpf_cnpj: this.cpf_cnpj,
+                        sexo: this.sexo,
+                    };
+
+                    fetch(rotas.pessoas.inserirPessoa, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken, // Include CSRF token in headers
+                    },
+                    body: JSON.stringify(pessoa), // Convert data to JSON
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                        throw new Error('Network response was not ok');
                         }
-                } 
-
-                request.send(pessoa)
-
-                this.cancelaAdicao()        
+                        return response.json(); // Parse JSON response
+                    })
+                    .then(data => {
+                        this.$emit('adicionar', data); // Emit the 'editar' event with the response data
+                    })
+                    .catch(error => {
+                        console.error('Error:', error); // Handle errors
+                    })
+                    .finally(() => {
+                        this.loading = false; // Reset loading state
+                        this.fechaModal(); // Close the modal
+                    });     
 
             } 
 
@@ -63,7 +78,6 @@ export default{
             this.cpfInvalido = false
             this.tamanhoNomeInvalido = false
 
-            
             if(this.dataNascimento == null)
             {
                 this.dataNascimentoInvalida = true
@@ -81,7 +95,7 @@ export default{
             else
                 this.tamanhoNomeInvalido = false
 
-            if(this.sexo === '0')
+            if(this.sexo === null)
             {
                 this.sexoInvalido = true
                 retorno =  false
@@ -90,14 +104,20 @@ export default{
             else
                 this.sexoInvalido = false
             
-            if(this.cpf_cnpj.toLowerCase().replace(/\D/g,'').length != 14 && this.cpf_cnpj.toLowerCase().replace(/\D/g,'').length != 11)
+            console.log(this.cpf_cnpj.replace(/\D/g,'').length)
+            if(this.cpf_cnpj.replace(/\D/g,'').length != 14 && this.cpf_cnpj.replace(/\D/g,'').length != 11)
             {
                 this.cpfInvalido = true
                 retorno = false
                 
             }
             else
-                this.cpfInvalido = true
+                this.cpfInvalido = false
+
+            this.cadastros.forEach((item)=>{
+                if(item.cpf_cnpj == this.cpf_cnpj.replace(/\D/g,''))
+                    this.cpfExistente = true
+            })
 
             return retorno 
         },
@@ -108,7 +128,8 @@ export default{
             this.edicaoInativa = true,
             this.tamanhoNomeInvalido = false
             this.cpf_cnpj = ''
-            this.sexo = 0
+            this.sexo = null
+            this.cpfExistente = false
         },
         fechaModal(){
             this.cancelaAdicao()
@@ -133,32 +154,33 @@ export default{
       <div class="modal-body">
         <div class="card border-dark mb-3" style="max-width: 18rem;" >
         <div class="card-body text-dark" >
-            <h5 class="card-title">Nome<input type="text" class="form-control" v-model="nome" :class="{campoInvalido: tamanhoNomeInvalido}"></h5>
+            <inputText v-model="nome" :maxLengh="30" :Label="'Nome'"/>
+            <p v-if="tamanhoNomeInvalido">Nome deve conter no minimo 3 caracteres </p>
             <div>
                 <h6>Sexo</h6>
+                <p v-if="sexoInvalido">Selecione o sexo do cliente</p>
                 <div>
                     <input type="radio" id="one" value="M" v-model="sexo" />
                     <label for="one">Masculino</label>
                     <input type="radio" id="two" value="F" v-model="sexo" />
                     <label for="two">Feminino</label>
                 </div>
-                <h5>CPF/CNPJ</h5>
-                <input v-model="cpf_cnpj" v-mask="['###.###.###-##', '##.###.###/####-##']" placeholder="CPF ou CNPJ" />
-                
-                    <label for="">Data nascimento</label>
+                <CpfCNPJinput v-model="cpf_cnpj" :Label="'CPF/CNPJ'"/>
+                <p v-if="cpfInvalido">CFP/CNPJ incompleto</p>
+                <p v-if="cpfExistente">CPF/CNPJ já cadastrado</p>
+                <datePicker v-model="dataNascimento" :Label="'Data Nascimento'" />
+                <p v-if="dataNascimentoInvalida">Selecione uma data de nascimento</p>
                 </div> 
         </div>
-        <ul v-if="tamanhoNomeInvalido">
-            <li v-if="tamanhoNomeInvalido">Nome deve conter no minimo 3 caracteres</li>
-            <li v-if="cpfInvalido">CFP/CNPJ incompleto</li>
-            <li v-if="idadeInvalida">Idade inválida</li>
-            <li v-if="sexoInvalido">Selecione o sexo do cliente</li>
-            <li v-if="cpfExistente">CPF/CNPJ já cadastrado</li>
-        </ul>
+
     </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="salvaAlteracoes()">Salvar</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" :disabled="loading" @click="salvaAlteracoes()">
+            {{ loading ? 'Salvando' : 'salvar' }}
+            <div v-if="loading" class="spinner-grow spinner-grow-sm" role="status">
+            </div>
+        </button>
         <button type="button" class="btn btn-secondary" @click="fechaModal()">Sair sem salvar</button>
       </div>
     </div>
@@ -168,13 +190,9 @@ export default{
 </template>
 
 <style scoped>
-ul{
-        color: red;
-    }
-    .campoInvalido{
-        border-color: red;
-    }
-    .input-model{
-        width: 100%;
-    }
+
+p{
+    color: red;
+    font-size: small;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="floating-label-container">
+    <div>
       <el-input
         v-model="texto"
         :maxlength="maxLengh"
@@ -9,6 +9,8 @@
         type="text"
         @input="onInput"
         :size="Size"
+        style="width: auto;"
+        :disabled="disable"
       />
     </div>
   </template>
@@ -29,14 +31,17 @@
         default: 20,
       },
       Label: {
-        type: Text,
+        type: [Text,String],
         default: "Descrição"
       },
       Size: {
         type: String,
         default: 'large'
       },
-
+      disable: {
+        type: Boolean,
+        default: false,
+        },
     },
     data() {
       return {

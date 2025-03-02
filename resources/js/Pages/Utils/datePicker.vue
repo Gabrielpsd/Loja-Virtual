@@ -1,38 +1,56 @@
 <template>
     <div class="demo-date-picker">
       <div class="block">
-        <span class="demonstration">Intervalo de busca</span>
+        <span class="demonstration">{{Label}}</span>
         <el-date-picker
           v-model="date"
-          type="daterange"
-          range-separator="até"
-          start-placeholder="Data inicial"
-          end-placeholder="Data final"
+          type="date"
+          :placeholder="Label"
           :size="size"
           @change="atualizaData"
           format="DD/MM/YYYY"
           value-format="YYYY-MM-DD"
           />
+          <p v-if="dataInvalida"> Data de nascimento invalida</p>
         </div>
     </div>
   </template>
 
 <script>
-
+import utils from '../Assets/ArquivosConfiguracao/apiconfig'
   export default {
     name: 'DatePicker',
+    props:{
+      Label:{
+        default: "Selecione a Data",
+        type: [Text, String]
+      },
+      modelValue: {
+        type: [String, Number],
+        default: '0.00',
+      }
+
+    },
     methods: {
         atualizaData()
         {
+            this.dataInvalida = false
 
+            if(utils.calculateAge(this.date) > utils.DIASMAXIMOS || utils.calculateAge(this.date) <0)
+            {
+                this.dataInvalida = true
+                return
+            }
+              
             this.$emit('update:modelValue', this.date)
         },
-
+       
     },
     data() {
       return {
         size: 'small' , 
-        date: '',
+        date: this.modelValue,
+        dataInvalida: false
       }
     },
   }
@@ -41,13 +59,12 @@
   <style scoped>
   .demo-date-picker {
     display: flex;
-    width: 100%;
+    width: auto;
     padding: 0;
     flex-wrap: wrap;
   }
   
   .demo-date-picker .block {
-    padding: 30px 0;
     text-align: center;
     border-right: solid 1px var(--el-border-color);
     flex: 1;
@@ -59,9 +76,12 @@
   
   .demo-date-picker .demonstration {
     display: block;
-    color: var(--el-text-color-secondary);
     font-size: 14px;
-    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  p{
+    font-size: small;
+    color: red;
   }
   </style>
   
