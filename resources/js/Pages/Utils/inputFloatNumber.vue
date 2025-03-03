@@ -1,143 +1,136 @@
 <template>
     <div class="floating-label-container">
-      <input
-        id="floatNumber"
-        :value="formattedValue"
-        v-money="moneyConfig"
-        type="text"
-        @input="onInput"
-        ref="moneyInput"
-        :size="Size"
-        @focus="isFocused = true"
+        <el-input
+        v-model="displayValue"
+        @input="handleInput"
         @blur="handleBlur"
-        :disabled="disable"
-      />
-      <label :class="{ active: isFocused || formattedValue }" for="floatNumber">
-        {{this.Label}}
-      </label>
-      <p v-if="isOverLimit && !disable" style="color: red;">Maximo: R${{ (maxAmount-0.01).toFixed(2) }}</p>
+        placeholder="Digite o Valor"
+        :disabled="disabled"
+        >
+        <template #prepend>R$</template>
+        </el-input>
+
+        <p v-if="isOverLimit" style="color: red;">Máximo: R${{ (maxAmount).toFixed(2) }}</p>
     </div>
   </template>
   
   <script>
-  import { VMoney } from 'v-money';
+  import { ElInput } from 'element-plus';
   
   export default {
-    directives: { money: VMoney },
+    components: {
+      ElInput,
+    },
     props: {
       modelValue: {
         type: [String, Number],
-        default: '0.00',
+        default: '',
       },
-      maxAmount: {
-        type: Number,
-        default: 10000,
-      },
-      Label: {
-        type: Text,
-        default: "Preço"
-      },
-      Size: {
-        type: Number,
-        default: 10
-      },
-        disable: {
+      disabled: {
         type: Boolean,
         default: false,
-        },
+      },
+      maxAmount:{
+        type: Number,
+        default: 1000000
+      }
     },
     data() {
       return {
-        isOverLimit: false,
-        isFocused: false,
-        moneyConfig: {
-          decimal: ',',
-          thousands: '.',
-          prefix: '$ ',
-          suffix: '',
-          precision: 2,
-          masked: false,
-        },
+        displayValue: this.formatCurrency(this.modelValue * 100),
+        isOverLimit: false
       };
     },
-    computed: {
-      formattedValue() {
-        const value = parseFloat(this.modelValue || '0.00');
-        if (isNaN(value)) return '';
-        return value.toFixed(2).replace('.', ',');
+    watch: {
+      modelValue(newValue) {
+        this.displayValue = this.formatCurrency(newValue);
       },
     },
     methods: {
-      onInput(event) {
-        const rawValue = event.target.value;
-        const numericValue = parseFloat(rawValue.replace(/[^0-9,]/g, '').replace(/[,]/g,'.'));
-        if (rawValue === '') {
-            this.isOverLimit = false;
-            this.$emit('update:modelValue', '');
-            return;
-        }
-        
-        console.log(numericValue)
-        console.log(typeof(numericValue))
-        if (numericValue >= this.maxAmount - 0.01)  {
-            console.log("Estou aqui (1)")
-            this.isOverLimit = true;
-            const maxValue = (this.maxAmount - 0.01).toFixed(this.moneyConfig.precision);
-            this.$emit('update:modelValue', maxValue);
-            this.$refs.moneyInput.value = maxValue.replace(/[$.]/g,'').replace(/[,]/,'.');
+      // Format the value as currency (e.g., 1000 => 1.000,00)
+      formatCurrency(value) {
+        if (!value) return '';
+        const numericValue = parseFloat(value.toString().replace(/[^0-9]/g, ''));
+        if (isNaN(numericValue)) return '';
+        return (numericValue / 100).toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+      },
+      // Parse the formatted value back to a raw number (e.g., 1.000,00 => 1000)
+      parseCurrency(formattedValue) {
+        if (!formattedValue) return 0;
+        const numericString = formattedValue
+          .replace(/[^0-9]/g, '') // Remove all non-numeric characters
+          .padStart(3, '0'); // Ensure at least 3 digits (for cents)
+        return parseInt(numericString, 10);
+      },
+      // Handle input event
+      handleInput(value) {
+        const parsedValue = this.parseCurrency(value);
+        // Check if the parsed value exceeds the maximum limit
+
+        if (parsedValue > this.maxAmount) {
+            this.isOverLimit = true; // Set over-limit flag
+            const cappedValue = this.maxAmount; // Cap the value at the maximum limit
+            this.displayValue = this.formatCurrency(cappedValue);
+            this.$emit('update:modelValue', cappedValue);
         } else {
-            console.log("Estou aqui (2)")
-            this.isOverLimit = false;
-            this.$emit('update:modelValue', rawValue.replace(/[$.]/g,'').replace(/[,]/,'.'));
+            this.isOverLimit = false; // Reset over-limit flag
+            this.displayValue = this.formatCurrency(parsedValue);
+            this.$emit('update:modelValue', (parsedValue/100));
         }
       },
+      // Handle blur event to ensure proper formatting
       handleBlur() {
-        if (!this.formattedValue) {
-          this.isFocused = false;
-        }
+        if(this.isOverLimit)
+            return
+        this.displayValue = this.formatCurrency(this.modelValue);
       },
     },
   };
   </script>
   
   <style scoped>
-  .floating-label-container {
-    position: relative;
-    margin-top: 20px;
-  }
-  
-  .floating-label-container input {
+  .el-input {
     width: 100%;
-    padding: 10px 10px 10px 5px;
-    font-size: 16px;
-    border: none;
-    border-bottom: 1px solid #757575;
-    outline: none;
   }
-  
-  .floating-label-container label {
-    color: #999;
-    font-size: 16px;
-    position: absolute;
-    pointer-events: none;
-    left: 5px;
-    top: 10px;
-    transition: 0.2s ease all;
-  }
-  
-  .floating-label-container input:focus ~ label,
-  .floating-label-container label.active {
-    top: -10px;
-    font-size: 12px;
-    color: #5264ae;
-  }
-  
-  .floating-label-container input:focus {
-    border-bottom: 2px solid #5264ae;
-  }
-  
-  p {
-    font-size: x-small;
-  }
+  .floating-label-container {
+  position: relative;
+  margin-top: 20px;
+}
+
+.floating-label-container input {
+  width: 100%;
+  padding: 10px 10px 10px 5px;
+  font-size: 16px;
+  border: none;
+  border-bottom: 1px solid #757575;
+  outline: none;
+}
+
+.floating-label-container label {
+  color: #999;
+  font-size: 16px;
+  position: absolute;
+  pointer-events: none;
+  left: 5px;
+  top: 10px;
+  transition: 0.2s ease all;
+}
+
+.floating-label-container input:focus ~ label,
+.floating-label-container label.active {
+  top: -10px;
+  font-size: 12px;
+  color: #5264ae;
+}
+
+.floating-label-container input:focus {
+  border-bottom: 2px solid #5264ae;
+}
+
+p {
+  font-size: x-small;
+}
   </style>
-  

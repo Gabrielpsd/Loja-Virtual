@@ -11,7 +11,7 @@
           format="DD/MM/YYYY"
           value-format="YYYY-MM-DD"
           />
-          <p v-if="dataInvalida"> Data de nascimento invalida</p>
+          <p v-if="dataInvalida"> Data não pode ser posterior a data atual</p>
         </div>
     </div>
   </template>

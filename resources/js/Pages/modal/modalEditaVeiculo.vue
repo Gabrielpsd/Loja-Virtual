@@ -1,31 +1,37 @@
 <script>
 import rotas from '../Assets/ArquivosConfiguracao/apiconfig'
-import inputIntNumber from '../utils/inputIntNumber.vue'
-import datePicker from '../Utils/datePicker.vue'
+import datePickerYear from '../Utils/datePickerYear.vue'
 import CpfCNPJinput from '../utils/CpfCNPJinput.vue'
 import inputText from '../Utils/inputText.vue'
+import selectListOne from '../Utils/selectListOne.vue'
+
 export default{
     props:{
-        cadastros: Array
+        Veiculo: Object,
+        Clientes: Array,
+        Marcas: Array,
+        Cores: Array
     },
     data(){
         return{
-            nome: '',
-            tamanhoNomeInvalido: false,
-            dataNascimentoInvalida: false,
-            cpf_cnpj: '',
-            cpfInvalido: false,
-            sexo: null,
-            dataNascimento: null,
-            cpfExistente: false,
+            placa: this.Veiculo.placa,
+            placaInvalida: false,
+            id_proprietario: this.Veiculo.id_proprietario,
+            proprietarioinvalido: false,
+            cor: this.Veiculo.id_cor,
+            corInvalida: false,
+            ano_fabricacao: this.Veiculo.ano_fabricacao + '',
+            anoFabricacaoInvalido: false, 
+            ano_modelo: this.Veiculo.ano_modelo + '',
+            anoModeloInvalido: false,
+            marca: this.Veiculo.id_marca,
+            marcaInvalida: false,
             loading: false,
-            sexoInvalido: false
           }
     },
     components:{
-        inputIntNumber,
-        datePicker,
-        CpfCNPJinput,
+        datePickerYear,
+        selectListOne,
         inputText
     },
     methods: {
@@ -37,13 +43,14 @@ export default{
                 const csrfToken = document.getElementsByName("_token")[0].value; // Get CSRF token
 
                     const pessoa = {
-                        nome: this.nome,
-                        data_nascimento: this.dataNascimento,
-                        cpf_cnpj: this.cpf_cnpj,
-                        sexo: this.sexo,
+                        id_proprietario: this.id_proprietario,
+                        cor: this.cor,
+                        marca: this.marca,
+                        ano_fabricacao: this.ano_fabricacao,
+                        ano_modelo: this.ano_modelo,
                     };
 
-                    fetch(rotas.pessoas.inserirPessoa, {
+                    fetch(rotas.veiculos.editar(this.Veiculo.id), {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -58,7 +65,7 @@ export default{
                         return response.json(); // Parse JSON response
                     })
                     .then(data => {
-                        this.$emit('adicionar', data); // Emit the 'editar' event with the response data
+                        this.$emit('editar', data); // Emit the 'editar' event with the response data
                     })
                     .catch(error => {
                         console.error('Error:', error); // Handle errors
@@ -75,61 +82,75 @@ export default{
         {   
             
             let retorno = true
-            this.cpfInvalido = false
-            this.tamanhoNomeInvalido = false
 
-            if(this.dataNascimento == null)
+
+            if(this.placa.length != 7)
             {
-                this.dataNascimentoInvalida = true
+                this.placaInvalida = true
                 retorno = false
             }
             else 
-                this.dataNascimentoInvalida = false
+                this.placaInvalida = false
 
-            if(this.nome.length <= 3)
+            if(this.id_proprietario == null)
             {
-                this.tamanhoNomeInvalido = true
+                this.proprietarioinvalido = true
                 retorno = false
                 
             }
             else
-                this.tamanhoNomeInvalido = false
+                this.proprietarioinvalido = false
 
-            if(this.sexo === null)
+            if(this.cor == null)
             {
-                this.sexoInvalido = true
+                this.corInvalida = true
                 retorno =  false
                 
             }
             else
-                this.sexoInvalido = false
-            
-            console.log(this.cpf_cnpj.replace(/\D/g,'').length)
-            if(this.cpf_cnpj.replace(/\D/g,'').length != 14 && this.cpf_cnpj.replace(/\D/g,'').length != 11)
+                this.corInvalida = false
+
+            if(this.marca == null)
             {
-                this.cpfInvalido = true
-                retorno = false
+                this.marcaInvalida = true
+                retorno =  false
                 
             }
             else
-                this.cpfInvalido = false
+                this.marcaInvalida = false
 
-            this.cadastros.forEach((item)=>{
-                if(item.cpf_cnpj == this.cpf_cnpj.replace(/\D/g,''))
-                    this.cpfExistente = true
-            })
+            if(this.ano_fabricacao > new Date().getFullYear() || this.ano_fabricacao == null)
+            {
+                this.anoFabricacaoInvalido = true
+                retorno =  false
+            }
+            else
+                this.anoFabricacaoInvalido = false
+
+            if(this.ano_modelo == null)
+            {
+                this.anoModeloInvalido = true
+                retorno =  false
+            }
+            else
+                this.anoModeloInvalido = false
 
             return retorno 
         },
 
         cancelaAdicao(){
-            this.nome = ''
-            this.fornecedor = false
-            this.edicaoInativa = true,
-            this.tamanhoNomeInvalido = false
-            this.cpf_cnpj = ''
-            this.sexo = null
-            this.cpfExistente = false
+            this.placa= '',
+            this.placaInvalida= false,
+            this.id_proprietario= null,
+            this.proprietarioinvalido= false,
+            this.id_cor= null,
+            this.corInvalida= false,
+            this.ano_fabricacao= null,
+            this.anoFabricacaoInvalido= false, 
+            this.ano_modelo= null,
+            this.anoModeloInvalido= false,
+            this.marca= null,
+            this.marcaInvalida= false
         },
         fechaModal(){
             this.cancelaAdicao()
@@ -154,22 +175,22 @@ export default{
       <div class="modal-body">
         <div class="card border-dark mb-3" style="max-width: 18rem;" >
         <div class="card-body text-dark" >
-            <inputText v-model="nome" :maxLengh="30" :Label="'Nome'"/>
-            <p v-if="tamanhoNomeInvalido">Nome deve conter no minimo 3 caracteres </p>
+            <inputText v-model="placa" :maxLengh="7" :Label="'Placa'"/>
+            <p v-if="placaInvalida">Placa deve conter 7 caracteres </p>
             <div>
-                <h6>Sexo</h6>
-                <p v-if="sexoInvalido">Selecione o sexo do cliente</p>
-                <div>
-                    <input type="radio" id="one" value="M" v-model="sexo" />
-                    <label for="one">Masculino</label>
-                    <input type="radio" id="two" value="F" v-model="sexo" />
-                    <label for="two">Feminino</label>
-                </div>
-                <CpfCNPJinput v-model="cpf_cnpj" :Label="'CPF/CNPJ'"/>
-                <p v-if="cpfInvalido">CFP/CNPJ incompleto</p>
-                <p v-if="cpfExistente">CPF/CNPJ já cadastrado</p>
-                <datePicker v-model="dataNascimento" :Label="'Data Nascimento'" />
-                <p v-if="dataNascimentoInvalida">Selecione uma data de nascimento</p>
+                <h6>Proprietario</h6>
+                <selectListOne v-model="id_proprietario" :options="this.Clientes" :label="'Proprietario'"/>
+                <p v-if="proprietarioinvalido">Selecione um proprietario </p>
+                <h6>Cor</h6>
+                <selectListOne v-model="cor" :options="Cores" :label="'Cor'"/>
+                <p v-if="corInvalida">Selecione uma cor </p>
+                <h6>Marca</h6>
+                <selectListOne v-model="marca" :options="Marcas" :label="'Marca'"/>
+                <p v-if="marcaInvalida">Selecione uma marca </p>
+                <datePickerYear v-model="ano_fabricacao" :Label="'Ano Fabricacao'" />
+                <p v-if="anoFabricacaoInvalido">Ano de fabricacao invalida </p>
+                <datePickerYear v-model="ano_modelo" :Label="'Ano Modelo'" />
+                <p v-if="anoModeloInvalido">Selecione uma data</p>
                 </div> 
         </div>
 
@@ -181,7 +202,7 @@ export default{
             <div v-if="loading" class="spinner-grow spinner-grow-sm" role="status">
             </div>
         </button>
-        <button type="button" class="btn btn-secondary" @click="fechaModal()">Sair sem salvar</button>
+        <button type="button" class="btn btn-secondary":disabled="loading" @click="fechaModal()">Sair sem salvar</button>
       </div>
     </div>
   </div>

@@ -1,24 +1,21 @@
 export const BASE_URL = 'http://localhost:8000'
-export const PRODUTOS = `${BASE_URL}/produtos`
-export const PRODUTOSAPI = `${BASE_URL}/api/produtos`
+export const SERVICOS = `${BASE_URL}/servicos`
+export const SERVICOSAPI = `${BASE_URL}/api/servicos`
 export const VEICULOS = `${BASE_URL}/veiculos`
 export const VEICULOSAPI = `${BASE_URL}/api/veiculos`
-export const FORNECEDORES = `${BASE_URL}/fornecedores`
+export const ORDEMSERVICO = `${BASE_URL}/OrdemServico`
+export const ORDEMSERVICOAPI = `${BASE_URL}/api/OrdemServico`
 export const PESSOAS = `${BASE_URL}/clientes`
 export const PESSOASAPI = `${BASE_URL}/api/clientes`
-export const MARCAS = `${BASE_URL}/marcas`
-export const MARCASAPI = `${BASE_URL}/api/marcas`
-export const ENTRADAS = `${BASE_URL}/entradas`
-export const ENTRADASAPI = `${BASE_URL}/api/entradas`
 export const DASHBOARD = `${BASE_URL}/api/dashboard`
 
 export default { 
-    produtos: {
-        lista: PRODUTOS,
-        detalhe: (idProduto) => `${PRODUTOS}/${idProduto}`,
-        inserir: `${PRODUTOSAPI}/inserir`,
-        editar: (idProduto) => `${PRODUTOSAPI}/editar/${idProduto}`,
-        remover:(idProduto) => `${PRODUTOSAPI}/remover/${idProduto}`
+    servicos: {
+        lista: SERVICOS,
+        detalhe: (idServico) => `${SERVICOS}/${idServico}`,
+        inserir: `${SERVICOSAPI}/inserir`,
+        editar: (idServico) => `${SERVICOSAPI}/editar/${idServico}`,
+        remover:(idServico) => `${SERVICOSAPI}/remover/${idServico}`
     },
     veiculos: {
         lista: VEICULOS,
@@ -26,12 +23,11 @@ export default {
         detalhe: (pedido) => `${VEICULOS}/detalhe/${pedido}`,
         editar: (id) => `${VEICULOSAPI}/editar/${id}`,
     },
-    marcas: {
-        lista: MARCAS,
-        detalhe: (idMarca) => `${MARCAS}/editar/${idMarca}`,
-        remover: (idMarca) => `${MARCASAPI}/remover/${idMarca}`,
-        adicionar: `${MARCASAPI}/inserir`,
-        editar: (idMarca) => `${MARCASAPI}/editar/${idMarca}`,
+    ordemServico: {
+        lista: ORDEMSERVICO,
+        inserir:`${ORDEMSERVICOAPI}/inserir`,
+        detalhe: (pedido) => `${ORDEMSERVICO}/detalhe/${pedido}`,
+        editar: (id) => `${ORDEMSERVICOAPI}/editar/${id}`,
     },
     pessoas:{
         lista: PESSOAS,
@@ -39,15 +35,6 @@ export default {
         inserirPessoa: `${PESSOASAPI}/inserir`,
         excluir: (idPessoa)=> `${PESSOASAPI}/excluir/${idPessoa}`,
         ativar: (idPessoa)=> `${PESSOASAPI}/ativar/${idPessoa}` 
-    },
-    entradas:{
-        lista: ENTRADAS,
-        excluir: (pedido) => `${ENTRADASAPI}/excluir/${pedido}`,
-        criar:`${ENTRADASAPI}/criarpedido`,
-        detalhe: (pedido) => `${ENTRADAS}/detalhe/${pedido}`,
-        remover: (pedido) => `${ENTRADASAPI}/removerProdutos/${pedido}`,
-        adicionar: (pedido) => `${ENTRADASAPI}/inserirProdutos/${pedido}`,
-        editar: (pedido) => `${ENTRADASAPI}/editarProdutos/${pedido}`,
     },
     dashboard:{
         vendasPorSexo: `${DASHBOARD}/vendasporsexo`,

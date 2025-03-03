@@ -1,5 +1,4 @@
 <script>
-import ElInputNumber from 'element-plus'
 export default{
     props: {
         modelValue: {
@@ -15,12 +14,10 @@ export default{
             default: "Preço"
         }
     },
-    components:{
-        ElInputNumber
-    },
     methods:{
         updateNumber(event){
             this.$emit('update:modelValue', this.inputNumber);
+            this.$emit('change');
         },
     },
     data(){

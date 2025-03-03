@@ -137,7 +137,7 @@ export default {
     
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Clientes</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Veiculos</h2>
             <button class="btn btn-primary" @click="cadastroVeiculoAtivo = !cadastroVeiculoAtivo"> Adicionar Veiculo </button>
         </template>
         <modalEditaVeiculo v-if="edicaoVeiculo" :Veiculo="this.veiculoSelecionado" :Clientes="this.Clientes" :Marcas="this.Marcas" :Cores="this.Cores" @fechaModal="edicaoVeiculo = false ; veiculoSelecionado = null" @editar="(veiculo)=>{editarVeiculo(veiculo)}"/>

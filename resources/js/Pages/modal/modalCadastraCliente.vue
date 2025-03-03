@@ -181,7 +181,7 @@ export default{
             <div v-if="loading" class="spinner-grow spinner-grow-sm" role="status">
             </div>
         </button>
-        <button type="button" class="btn btn-secondary" @click="fechaModal()">Sair sem salvar</button>
+        <button type="button" class="btn btn-secondary":disabled="loading" @click="fechaModal()">Sair sem salvar</button>
       </div>
     </div>
   </div>

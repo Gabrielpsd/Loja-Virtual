@@ -105,8 +105,6 @@ export default {
         },
 
         editarPessoa(pessoa){
-            console.log("Editando ")
-            console.log(pessoa)
             const index = this.pessoasData.findIndex( c => c.id === pessoa.id)
             if(index !== -1)
                 this.pessoasData[index] = pessoa

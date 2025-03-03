@@ -121,7 +121,7 @@ class veiculos_controller extends Controller
         return response()->json($response[0]);
     }
     
-    public function editarPessoa(Request $request , string $id)
+    public function editarVeiculo(Request $request , string $id)
     {
         $pessoa = Veiculos::findOrFail($id);
         $pessoa->update($request->all());

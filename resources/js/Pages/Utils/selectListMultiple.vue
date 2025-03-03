@@ -23,7 +23,7 @@
             @change="handleCheckAll"
             :indeterminate="indeterminate"
           >
-            Select All
+            Selecionar Todos
           </el-checkbox>
         </template>
 

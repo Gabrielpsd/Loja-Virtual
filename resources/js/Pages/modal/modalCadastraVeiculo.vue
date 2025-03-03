@@ -119,8 +119,6 @@ export default{
             else
                 this.marcaInvalida = false
 
-            console.log( new Date().getFullYear() )
-            console.log( this.ano_fabricacao)
             if(this.ano_fabricacao > new Date().getFullYear() || this.ano_fabricacao == null)
             {
                 this.anoFabricacaoInvalido = true
@@ -204,7 +202,7 @@ export default{
             <div v-if="loading" class="spinner-grow spinner-grow-sm" role="status">
             </div>
         </button>
-        <button type="button" class="btn btn-secondary" @click="fechaModal()">Sair sem salvar</button>
+        <button type="button" class="btn btn-secondary":disabled="loading" @click="fechaModal()">Sair sem salvar</button>
       </div>
     </div>
   </div>
