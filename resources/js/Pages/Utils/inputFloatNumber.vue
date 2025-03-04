@@ -6,6 +6,7 @@
         @blur="handleBlur"
         placeholder="Digite o Valor"
         :disabled="disabled"
+        :size="size"
         >
         <template #prepend>R$</template>
         </el-input>
@@ -33,7 +34,11 @@
       maxAmount:{
         type: Number,
         default: 1000000
-      }
+      },
+      size:{
+            type: [String, Text],
+            default: 'small'
+        }
     },
     data() {
       return {

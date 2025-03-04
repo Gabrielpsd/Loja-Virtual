@@ -1,6 +1,5 @@
 <script>
 import rotas from '../Assets/ArquivosConfiguracao/apiconfig'
-import inputIntNumber from '../utils/inputIntNumber.vue'
 import datePicker from '../Utils/datePicker.vue'
 import CpfCNPJinput from '../utils/CpfCNPJinput.vue'
 import inputText from '../Utils/inputText.vue'
@@ -19,11 +18,11 @@ export default{
             dataNascimento: null,
             cpfExistente: false,
             loading: false,
-            sexoInvalido: false
+            sexoInvalido: false,
+            digitosValidos: false
           }
     },
     components:{
-        inputIntNumber,
         datePicker,
         CpfCNPJinput,
         inputText
@@ -39,7 +38,7 @@ export default{
                     const pessoa = {
                         nome: this.nome,
                         data_nascimento: this.dataNascimento,
-                        cpf_cnpj: this.cpf_cnpj,
+                        cpf_cnpj: this.cpf_cnpj.replace(/\D/g,''),
                         sexo: this.sexo,
                     };
 
@@ -104,8 +103,16 @@ export default{
             else
                 this.sexoInvalido = false
             
-            console.log(this.cpf_cnpj.replace(/\D/g,'').length)
-            if(this.cpf_cnpj.replace(/\D/g,'').length != 14 && this.cpf_cnpj.replace(/\D/g,'').length != 11)
+            if(this.cpf_cnpj.replace(/\D/g,'').length != 14 && this.cpf_cnpj.replace(/\D/g,'').length != 11 )
+            {
+                this.cpfInvalido = true
+                retorno = false
+                
+            }
+            else
+                this.cpfInvalido = false
+
+            if(!this.digitosValidos)
             {
                 this.cpfInvalido = true
                 retorno = false
@@ -116,7 +123,10 @@ export default{
 
             this.cadastros.forEach((item)=>{
                 if(item.cpf_cnpj == this.cpf_cnpj.replace(/\D/g,''))
+                {
                     this.cpfExistente = true
+                    retorno = false
+                }
             })
 
             return retorno 
@@ -165,7 +175,7 @@ export default{
                     <input type="radio" id="two" value="F" v-model="sexo" />
                     <label for="two">Feminino</label>
                 </div>
-                <CpfCNPJinput v-model="cpf_cnpj" :Label="'CPF/CNPJ'"/>
+                <CpfCNPJinput v-model="cpf_cnpj" :Label="'CPF/CNPJ'" @validaDados="(value)=>{this.digitosValidos=value}"/>
                 <p v-if="cpfInvalido">CFP/CNPJ incompleto</p>
                 <p v-if="cpfExistente">CPF/CNPJ já cadastrado</p>
                 <datePicker v-model="dataNascimento" :Label="'Data Nascimento'" />

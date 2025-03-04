@@ -7,13 +7,13 @@
         <div class="max-w-lg mx-auto">
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
-                    :href="route('login')"
+                    :href="loginRoute"
                     class="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-all"
                 >
                     Login
                 </Link>
                 <Link
-                    :href="route('register')"
+                    :href="registerRoute"
                     class="px-6 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-all"
                 >
                     Criar Conta
@@ -23,6 +23,19 @@
     </div>
 </template>
 
-<script setup>
+<script>
 import { Link } from '@inertiajs/vue3';
+import config from './Assets/ArquivosConfiguracao/apiconfig'
+
+export default {
+    components: {
+        Link
+    },
+    data(){
+        return{
+            loginRoute: config.login,
+            registerRoute: config.register
+        }
+    }
+}
 </script>

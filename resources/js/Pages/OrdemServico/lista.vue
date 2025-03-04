@@ -118,56 +118,125 @@ export default {
 
 <template>
     <Head title="Servicos" />
-    
+
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Ordem servicos</h2>
-            <button class="btn btn-primary" @click="cadastroOrdemServico = !cadastroOrdemServico"> Adicionar Serviço </button>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Ordem Serviços</h2>
+            <button class="btn btn-primary" @click="cadastroOrdemServico = !cadastroOrdemServico">Adicionar Serviço</button>
         </template>
-        <modalEditaOrdemServico v-if="edicaoServico" :OrdemServico="ordemServicoSelecionado" :Servicos="this.Servicos" :Clientes="this.Clientes" :Veiculos="this.Veiculos" @fechaModal="edicaoServico = false ; servicoSelecionado = null" @editar="(servico)=>{editarServico(servico)}"/>
-        <modalCadastraOrdemServico v-if="cadastroOrdemServico" :Clientes="this.Clientes" :Veiculos="this.Veiculos" @fechaModal="cadastroOrdemServico = false" @adicionar="(servico)=>adicionaOrdem(servico)"/>
-         <div class="py-12" >
-           <div class="bg-white overflow-hidden shadow-sm justify-around sm:rounded-lg flex ">
-                <inputIntNumberDigit v-model="id" :maxLengh="4" :label="'Id'"/>
-                <selectListMultiple id="Cliente" :label="'Cliente'" v-model="clientes" :options="Clientes"/>  
-                <selectListMultiple id="Veiculo" :label="'Veiculo'" v-model="veiculos" :options="Veiculos"/>  
-                <datePickerInterval v-model="datasFiltro" :Label="'Data do Servico'"/> 
-            </div>
-        <div>
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mx-auto p-2">
-                <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Cliente</th>
-                                <th scope="col">Veiculo</th>
-                                <th scope="col">Data serviço</th>
-                                <th scope="col">Preco Total</th>
-                            </tr>
-                        </thead>
-                    <tbody>
-                    <tr v-for="ordemServico in filtraBusca">
-                        <th scope="row">{{ordemServico.id}}</th>
-                            <td>{{ordemServico.nome}}</td>
-                            <td>{{ordemServico.descricao_veiculo}}</td>
-                            <td>{{maskedDate(ordemServico.data)}}</td>
-                            <td>R$ {{calculaTotal(ordemServico.servicos)}}</td>
-                            <td>
-                            <!-- Button to open modal -->
-                            <button
-                                class="btn btn-sm btn-primary"
-                                @click="openModal(ordemServico)"
-                            >
-                                Editar
-                            </button>
-                    </td>
-                    </tr>
-                </tbody>
-                
-            </table>
-        </div>
-        </div>
-    </div>
-</AuthenticatedLayout> 
 
+        <!-- Modals -->
+        <modalEditaOrdemServico v-if="edicaoServico" :OrdemServico="ordemServicoSelecionado" :Servicos="Servicos" :Clientes="Clientes" :Veiculos="Veiculos" @fechaModal="edicaoServico = false; ordemServicoSelecionado = null" @editar="editarServico" />
+        <modalCadastraOrdemServico v-if="cadastroOrdemServico" :Clientes="Clientes" :Veiculos="Veiculos" @fechaModal="cadastroOrdemServico = false" @adicionar="adicionaOrdem" />
+
+        <!-- Main Content -->
+        <div class="py-12">
+            <!-- Filters Section -->
+            <div class="filters-container">
+                <inputIntNumberDigit v-model="id" :maxLengh="4" :label="'Id'" />
+                <selectListMultiple id="Cliente" :label="'Cliente'" v-model="clientes" :options="Clientes" />
+                <selectListMultiple id="Veiculo" :label="'Veiculo'" v-model="veiculos" :options="Veiculos" />
+                <datePickerInterval v-model="datasFiltro" :Label="'Data do Servico'" />
+            </div>
+
+            <!-- Table Section -->
+            <div class="table-container">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Cliente</th>
+                            <th scope="col">Veículo</th>
+                            <th scope="col">Data Serviço</th>
+                            <th scope="col">Preço Total</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="ordemServico in filtraBusca" :key="ordemServico.id">
+                            <th scope="row">{{ ordemServico.id }}</th>
+                            <td>{{ ordemServico.nome }}</td>
+                            <td>{{ ordemServico.descricao_veiculo }}</td>
+                            <td>{{ maskedDate(ordemServico.data) }}</td>
+                            <td>R$ {{ calculaTotal(ordemServico.servicos).toFixed(2) }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" @click="openModal(ordemServico)">Editar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </AuthenticatedLayout>
 </template>
+
+<style scoped>
+/* Base styles for filters container */
+.filters-container {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping to the next line */
+    gap: 16px; /* Spacing between items */
+    margin-bottom: 20px;
+}
+
+/* Styles for each filter item */
+.filters-container > * {
+    flex: 1; /* Distribute available space equally */
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+/* Media query for smaller screens */
+@media (max-width: 1024px) {
+    .filters-container {
+        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    }
+
+    .filters-container > * {
+        flex: 1 1 calc(50% - 16px); /* Two items per row with spacing */
+    }
+}
+
+/* Media query for smartphones */
+@media (max-width: 767px) {
+    .filters-container > * {
+        flex: 1 1 100%; /* Stack items vertically on small screens */
+    }
+}
+
+.table-container {
+    overflow-x: auto; /* Enable horizontal scrolling for small screens */
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f8f9fa;
+}
+
+/* Button styles */
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+</style>

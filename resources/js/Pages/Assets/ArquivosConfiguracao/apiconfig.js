@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:8000'
+export const BASE_URL = 'https://0fa9-170-0-169-82.ngrok-free.app'
 export const SERVICOS = `${BASE_URL}/servicos`
 export const SERVICOSAPI = `${BASE_URL}/api/servicos`
 export const VEICULOS = `${BASE_URL}/veiculos`
@@ -10,6 +10,8 @@ export const PESSOASAPI = `${BASE_URL}/api/clientes`
 export const DASHBOARD = `${BASE_URL}/api/dashboard`
 
 export default { 
+    login: `${BASE_URL}/login`,
+    register: `${BASE_URL}/register`,
     servicos: {
         lista: SERVICOS,
         detalhe: (idServico) => `${SERVICOS}/${idServico}`,
@@ -41,6 +43,12 @@ export default {
         pessoasPorIdade: `${DASHBOARD}/pessoasPorIdade`,
         vendasPorIdade: `${DASHBOARD}/vendasPorIdade`,
         produtospormarca: `${DASHBOARD}/produtospormarca`,
+        quantidadeVendasPorPeriodo: `${DASHBOARD}/quantidadevendasporperiodo`,
+        totalPorPerido: `${DASHBOARD}/totalporperiodo`,
+        totalIdadePorSexo: `${DASHBOARD}/totalidadeporsexo`,
+        totalValorPorMarca: `${DASHBOARD}/totalvalorpormarca`,
+        VendasPorPeriodo: `${DASHBOARD}/vendasporperiodo`,
+        totalServicosPorPeriodo: `${DASHBOARD}/totalservicosporperiodo`,
     },
     EXTENCOESVALIDAS: ['XML', 'xml', 'Xml'],
     ROTAARQUIVOS: `${BASE_URL}/api/upload`,

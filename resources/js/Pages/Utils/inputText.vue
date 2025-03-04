@@ -16,12 +16,9 @@
   </template>
   
   <script>
-  import { ElInput } from 'v-money';
   
   export default {
-    components:{
-      ElInput
-    },
+
     props: {
       modelValue: {
         type: String,
@@ -56,10 +53,4 @@
   };
   </script>
   
-  <style scoped>
-  el-input{
-    width: 100%;
-    max-width: 240px;
-  }
-  </style>
   

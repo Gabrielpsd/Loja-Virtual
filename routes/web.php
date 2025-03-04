@@ -72,7 +72,12 @@ Route::middleware('auth')->group(function(){
 //Dashboard
 Route::middleware('auth')->group(function(){
     Route::post('/api/dashboard/vendasporsexo', [DashboardController::class, 'vendasPorSexo'])->name('Dashboard.vendasPorSexo');
-    Route::post('/api/dashboard/editar/{id}', [DashboardController::class,'editarOrdemServico'])->name('OrdemServico.editar');
+    Route::post('/api/dashboard/quantidadevendasporperiodo', [DashboardController::class, 'quantidadeVendasPorPeriodo'])->name('Dashboard.quantidadeVendasPorPeriodo');
+    Route::post('/api/dashboard/totalporperiodo', [DashboardController::class, 'totalPorPeriodo'])->name('Dashboard.totalPorPeriodo');
+    Route::post('/api/dashboard/totalidadeporsexo', [DashboardController::class, 'totalIdadePorSexo'])->name('Dashboard.totalIdadePorSexo');
+    Route::post('/api/dashboard/totalvalorpormarca', [DashboardController::class, 'totalValorPorMarca'])->name('Dashboard.totalValorPorMarca');
+    Route::post('/api/dashboard/vendasporperiodo', [DashboardController::class, 'VendasPorPeriodo'])->name('Dashboard.VendasPorPeriodo');
+    Route::post('/api/dashboard/totalservicosporperiodo', [DashboardController::class, 'totalServicosPorPeriodo'])->name('Dashboard.totalServicosPorPeriodo');
 });
 
 require __DIR__.'/auth.php';

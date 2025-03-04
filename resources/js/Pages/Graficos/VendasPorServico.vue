@@ -1,6 +1,7 @@
 <template>
     <div >
-        <v-chart :option="VendasPorSexo" class="chart-container" />
+        <h4>Vendas por serviço</h4>
+        <v-chart :option="vendasPorServico" class="chart-container" />
     </div>
 </template>
 
@@ -17,17 +18,15 @@ export default {
         data: {
             handler(newData) {
                 // Update the chart's data when the prop changes
-                this.VendasPorSexo.series[0].data = newData;
+                this.vendasPorServico.series[0].data = newData;
             },
             immediate: true // Trigger the handler immediately on component mount
         }
     },
   data() {
     return {
-      VendasPorSexo: {
-        title: {
-                    text: 'Vendas Por Sexo',
-                    subtext: 'Total ',
+      vendasPorServico: {
+            title: {
                     left: 'center'
                 },
                 tooltip: {
@@ -37,17 +36,11 @@ export default {
                     orient: 'vertical',
                     left: 'left'
                 },
-                color: ["#6495ED","#FF69B4"],
                 series: [
                     {
-                        name: 'Total venda por sexo',
+                        name: 'Vendas por Servico',
                         type: 'pie',
-                        radius: ['40%', '70%'],
-                        center: ['50%', '70%'],
-                        // adjust the start and end angle
-                        startAngle: 180,
-                        endAngle: 360,
-                        data: this.data,
+                        data:this.data,
                         emphasis: {
                             itemStyle: {
                             shadowBlur: 10,
@@ -57,7 +50,7 @@ export default {
                         },
                         label:{
                             show: true,
-                            formatter: '{b}: ({d})%'
+                            formatter: '{c}-({d}%)'
                         }
                     }
                 ]
@@ -69,7 +62,7 @@ export default {
 
 <style scoped>
 .chart-container {
-    height: 350px;
+    height: 400px;
     max-width: 100%;
 }
 </style>

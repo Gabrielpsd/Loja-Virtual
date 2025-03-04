@@ -28,6 +28,8 @@ export default{
     },
     methods: {
         salvaAlteracoes(){
+            console.log("to aqui")
+            console.log(this.obs)
             if(this.validacoes())
             {
 

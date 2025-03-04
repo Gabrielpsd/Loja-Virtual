@@ -180,58 +180,128 @@ export default {
 
 <template>
     <Head title="Dashboard" />
-    
+
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Clientes</h2>
-            <button class="btn btn-primary" @click="cadastroclienteAtivo = !cadastroclienteAtivo"> Adicionar Cliente </button>
+            <button class="btn btn-primary" @click="cadastroclienteAtivo = !cadastroclienteAtivo">Adicionar Cliente</button>
         </template>
-        <modalEditaCliente v-if="editarCliente" :Cliente="clienteSelecionado" :cadastros="this.pessoasData" @fechaModal="editarCliente = false ; clienteSelecionado = null" @editar="(pessoa)=>{editarPessoa(pessoa)}"/>
-        <modalCadastraCliente v-if="cadastroclienteAtivo" :cadastros="this.pessoasData" @fechaModal="cadastroclienteAtivo = false" @adicionar="(pessoa)=>this.pessoasData.push(pessoa)"/>
-         <div class="py-12" >
-           <div class="bg-white overflow-hidden shadow-sm justify-between sm:rounded-lg flex ">
-               <inputIntNumberDigit v-model="id" :maxLengh="4" :label="'Id'"/>
-                <inputText v-model="nome" :maxLengh="30" :Label="'Nome'"/>
-                <CpfCNPJinput v-model="cpf_cnpj" :Label="'CPF/CNPJ'"/>
-                <datePickerInterval v-model="data_nascimento" :Label="'Data nascimento'"/>
-                <selectListMultiple id="sexo" :label="'Sexo'" v-model="sexo" :options="[{id: 'M', descricao: 'Masculino'},{id: 'F',descricao: 'Feminino'}]"/>
-                <selectListMultiple id="Ativado" :label="'Cadastro Ativo'" v-model="ativado" :options="[{id: true, descricao: 'Ativado'},{id: false,descricao: 'Desativado'}]"/>
-            </div>
-        <div>
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mx-auto p-2">
-                <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Nome</th>
-                                <th scope="col">CPF</th>
-                                <th scope="col">Data Nascimento</th>
-                                <th scope="col">Sexo</th>
-                            </tr>
-                        </thead>
-                    <tbody>
-                    <tr v-for="cliente in filtraBusca">
-                        <th scope="row">{{cliente.id}}</th>
-                            <td>{{cliente.nome}}</td>
-                            <td>{{maskedCpfCnpj(cliente.cpf_cnpj)}}</td>
-                            <td>{{maskedBirthDay(cliente.data_nascimento)}}</td>
-                            <td>{{ cliente.sexo == 'M' ? "Masculino" : "Feminino" }}</td>
-                            <td>
-                            <!-- Button to open modal -->
-                            <button
-                                class="btn btn-sm btn-primary"
-                                @click="openModal(cliente)"
-                            >
-                                Editar
-                            </button>
-                    </td>
-                    </tr>
-                </tbody>
-                
-            </table>
-        </div>
-        </div>
-    </div>
-</AuthenticatedLayout> 
 
+        <!-- Modals -->
+        <modalEditaCliente v-if="editarCliente" :Cliente="clienteSelecionado" :cadastros="pessoasData" @fechaModal="editarCliente = false; clienteSelecionado = null" @editar="editarPessoa" />
+        <modalCadastraCliente v-if="cadastroclienteAtivo" :cadastros="pessoasData" @fechaModal="cadastroclienteAtivo = false" @adicionar="pessoa => pessoasData.push(pessoa)" />
+
+        <!-- Main Content -->
+        <div class="py-12">
+            <!-- Filters Section -->
+            <div class="filters-container">
+                <inputIntNumberDigit v-model="id" :maxLengh="4" :label="'Id'" />
+                <inputText v-model="nome" :maxLengh="30" :Label="'Nome'" />
+                <CpfCNPJinput v-model="cpf_cnpj" :Label="'CPF/CNPJ'" />
+                <selectListMultiple id="sexo" :label="'Sexo'" v-model="sexo" :options="[{ id: 'M', descricao: 'Masculino' }, { id: 'F', descricao: 'Feminino' }]" />
+                <datePickerInterval v-model="data_nascimento" :Label="'Data nascimento'" />
+                <selectListMultiple id="Ativado" :label="'Cadastro Ativo'" v-model="ativado" :options="[{ id: true, descricao: 'Ativado' }, { id: false, descricao: 'Desativado' }]" />
+            </div>
+
+            <!-- Table Section -->
+            <div class="table-container">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Nome</th>
+                            <th scope="col">CPF</th>
+                            <th scope="col">Data Nascimento</th>
+                            <th scope="col">Sexo</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="cliente in filtraBusca" :key="cliente.id">
+                            <th scope="row">{{ cliente.id }}</th>
+                            <td>{{ cliente.nome }}</td>
+                            <td>{{ maskedCpfCnpj(cliente.cpf_cnpj) }}</td>
+                            <td>{{ maskedBirthDay(cliente.data_nascimento) }}</td>
+                            <td>{{ cliente.sexo == 'M' ? 'Masculino' : 'Feminino' }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" @click="openModal(cliente)">Editar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </AuthenticatedLayout>
 </template>
+
+<style scoped>
+
+.py-12 {
+    padding-left: 16px; /* Add left padding */
+    padding-right: 16px; /* Add right padding */
+}
+
+.filters-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping to the next line */
+    gap: 16px; /* Spacing between items */
+    margin-bottom: 20px;
+}
+
+/* Styles for each filter item */
+.filters-container > * {
+    flex: 1 1 calc(33.33% - 16px); /* Three items per row with spacing */
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+.table-container {
+    overflow-x: auto; /* Enable horizontal scrolling for small screens */
+}
+
+/* Media query for tablets and larger devices */
+@media (min-width: 768px) {
+    .filters-container > * {
+        flex: 1 1 calc(50% - 16px); /* Two columns for filters */
+    }
+}
+
+/* Media query for desktops */
+@media (min-width: 1024px) {
+    .filters-container > * {
+        flex: 1 1 calc(33.33% - 16px); /* Three columns for filters */
+    }
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f8f9fa;
+}
+
+/* Button styles */
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+</style>

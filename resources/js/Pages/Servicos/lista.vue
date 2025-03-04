@@ -76,56 +76,124 @@ export default {
 
 }
 </script>
-
 <template>
     <Head title="Servicos" />
-    
+
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Serviços</h2>
-            <button class="btn btn-primary" @click="cadastroServicoAtivo = !cadastroServicoAtivo"> Adicionar Serviço </button>
+            <button class="btn btn-primary" @click="cadastroServicoAtivo = !cadastroServicoAtivo">Adicionar Serviço</button>
         </template>
-        <modalEditaServico v-if="edicaoServico" :Servico="servicoSelecionado" :Servicos="this.servicos" @fechaModal="edicaoServico = false ; servicoSelecionado = null" @editar="(servico)=>{editarServico(servico)}"/>
-        <ModalCadastraServico v-if="cadastroServicoAtivo" :Servicos="this.Servicos" @fechaModal="cadastroServicoAtivo = false" @adicionar="(servico)=>this.servicos.push(servico)"/>
-         <div class="py-12" >
-           <div class="bg-white overflow-hidden shadow-sm justify-around sm:rounded-lg flex ">
-                <inputIntNumberDigit v-model="id" :maxLengh="4" :label="'Id'"/>
-                <inputText v-model="descricao" :maxLengh="30" :Label="'Descricao'"/>
-                <selectListMultiple id="Ativado" :label="'Cadastro Ativo'" v-model="ativado" :options="[{id: true, descricao: 'Ativado'},{id: false,descricao: 'Desativado'}]"/>  
-            </div>
-        <div>
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mx-auto p-2">
-                <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Descrição</th>
-                                <th scope="col">Preço</th>
-                                <th scope="col">Situação</th>
-                            </tr>
-                        </thead>
-                    <tbody>
-                    <tr v-for="servico in filtraBusca">
-                        <th scope="row">{{servico.id}}</th>
-                            <td>{{servico.descricao}}</td>
-                            <td>R$ {{ servico.preco}}</td>
-                            <td>{{servico.ativado ? 'Ativado': 'Desativado'}}</td>
-                            <td>
-                            <!-- Button to open modal -->
-                            <button
-                                class="btn btn-sm btn-primary"
-                                @click="openModal(servico)"
-                            >
-                                Editar
-                            </button>
-                    </td>
-                    </tr>
-                </tbody>
-                
-            </table>
-        </div>
-        </div>
-    </div>
-</AuthenticatedLayout> 
 
+        <!-- Modals -->
+        <modalEditaServico v-if="edicaoServico" :Servico="servicoSelecionado" :Servicos="servicos" @fechaModal="edicaoServico = false; servicoSelecionado = null" @editar="editarServico" />
+        <ModalCadastraServico v-if="cadastroServicoAtivo" :Servicos="Servicos" @fechaModal="cadastroServicoAtivo = false" @adicionar="servico => servicos.push(servico)" />
+
+        <!-- Main Content -->
+        <div class="py-12">
+            <!-- Filters Section -->
+            <div class="filters-container">
+                <inputIntNumberDigit v-model="id" :maxLengh="4" :label="'Id'" />
+                <inputText v-model="descricao" :maxLengh="30" :Label="'Descricao'" />
+                <selectListMultiple id="Ativado" :label="'Cadastro Ativo'" v-model="ativado" :options="[{ id: true, descricao: 'Ativado' }, { id: false, descricao: 'Desativado' }]" />
+            </div>
+
+            <!-- Table Section -->
+            <div class="table-container">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col">Preço</th>
+                            <th scope="col">Situação</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="servico in filtraBusca" :key="servico.id">
+                            <th scope="row">{{ servico.id }}</th>
+                            <td>{{ servico.descricao }}</td>
+                            <td>R$ {{ servico.preco }}</td>
+                            <td>{{ servico.ativado ? 'Ativado' : 'Desativado' }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" @click="openModal(servico)">Editar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </AuthenticatedLayout>
 </template>
+
+<style scoped>
+/* Base styles for filters container */
+.filters-container {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping to the next line */
+    gap: 16px; /* Spacing between items */
+    margin-bottom: 20px;
+}
+
+/* Styles for each filter item */
+.filters-container > * {
+    flex: 1; /* Distribute available space equally */
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+/* Media query for smaller screens */
+@media (max-width: 1024px) {
+    .filters-container {
+        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    }
+
+    .filters-container > * {
+        flex: 1 1 calc(50% - 16px); /* Two items per row with spacing */
+    }
+}
+
+/* Media query for smartphones */
+@media (max-width: 767px) {
+    .filters-container > * {
+        flex: 1 1 100%; /* Stack items vertically on small screens */
+    }
+}
+/* Table container */
+.table-container {
+    overflow-x: auto; /* Enable horizontal scrolling for small screens */
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f8f9fa;
+}
+
+/* Button styles */
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+</style>
