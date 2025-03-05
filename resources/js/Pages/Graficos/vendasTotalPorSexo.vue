@@ -1,6 +1,6 @@
 <template>
     <div >
-        <v-chart :option="vendasValorPorServico" class="chart-container" />
+        <v-chart :option="totalVendasPorSexo" class="chart-container" />
     </div>
 </template>
 
@@ -17,17 +17,17 @@ export default {
         data: {
             handler(newData) {
                 // Update the chart's data when the prop changes
-                this.vendasValorPorServico.xAxis[0].data = newData.map(item => item.name);
-                this.vendasValorPorServico.series[0].data = newData.map(item => item.value);
+                this.totalVendasPorSexo.xAxis[0].data = newData.map(item => item.name);
+                this.totalVendasPorSexo.series[0].data = newData.map(item => item.value);
             },
             immediate: true // Trigger the handler immediately on component mount
         }
     },
   data() {
     return {
-      vendasValorPorServico: {
+      totalVendasPorSexo: {
         title: {
-                    text: 'Total Vendas Por Servico',
+                    text: 'Total Vendas Por sexo',
                     subtext: 'Total ',
                     left: 'center'
                 },
@@ -59,11 +59,6 @@ export default {
             data:this.data.map( item => item.name),
             axisTick: {
                 alignWithLabel: true
-            },
-            axisLabel: {
-                interval: 0, // Force all labels to show
-                rotate: 45,  // Prevents overlap
-                fontSize: 10 // Adjust text size
             }
             }
         ],

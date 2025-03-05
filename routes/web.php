@@ -78,6 +78,8 @@ Route::middleware('auth')->group(function(){
     Route::post('/api/dashboard/totalvalorpormarca', [DashboardController::class, 'totalValorPorMarca'])->name('Dashboard.totalValorPorMarca');
     Route::post('/api/dashboard/vendasporperiodo', [DashboardController::class, 'VendasPorPeriodo'])->name('Dashboard.VendasPorPeriodo');
     Route::post('/api/dashboard/totalservicosporperiodo', [DashboardController::class, 'totalServicosPorPeriodo'])->name('Dashboard.totalServicosPorPeriodo');
+    Route::post('/api/dashboard/totalvendasporsexo', [DashboardController::class, 'totalVendasPorSexo'])->name('Dashboard.totalVendasPorSexo');
+    Route::post('/api/dashboard/totalvendasporcliente', [DashboardController::class, 'totalVendasPorCliente'])->name('Dashboard.totalVendasPorCliente');
 });
 
 require __DIR__.'/auth.php';

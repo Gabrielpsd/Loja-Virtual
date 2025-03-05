@@ -11,6 +11,8 @@ export default{
     },
     data(){
         return{
+            clientesOptions: this.Clientes.filter( d => d.ativado == true),
+            veiculosOtions: this.Veiculos.filter( d=> d.ativado == true),
             cliente: null,
             clienteInvalido: false,
             veiculo: null,
@@ -28,8 +30,10 @@ export default{
     },
     methods: {
         salvaAlteracoes(){
+
             console.log("to aqui")
-            console.log(this.obs)
+            console.log(this.clientesOptions)
+            console.log(this.veiculosOtions)
             if(this.validacoes())
             {
 
@@ -142,10 +146,10 @@ export default{
         <div class="card border-dark mb-3" style="max-width: 18rem;" >
         <div class="card-body text-dark" >
             <h6> Selecione Cliente</h6>
-            <selectListOne v-model="cliente" :options="this.Clientes" :label="'Clientes'"></selectListOne>
+            <selectListOne v-model="cliente" :options="clientesOptions" :label="'Clientes'"></selectListOne>
             <p v-if="clienteInvalido"> Selecione um cliente</p>
             <h6> Selecione Veiculo</h6>
-            <selectListOne v-model="veiculo" :options="veiculosCliente" :label="'Veiculos'"></selectListOne>
+            <selectListOne v-model="veiculo" :options="veiculosOtions" :label="'Veiculos'"></selectListOne>
             <p v-if="veiculoInvalido"> Selecione um veiculo</p>
             <datePicker v-model="data" :Label="'Data servico'"/>
             <p v-if="dataInvalida"> Selecione uma data</p>

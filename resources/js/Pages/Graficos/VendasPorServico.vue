@@ -41,6 +41,7 @@ export default {
                         name: 'Vendas por Servico',
                         type: 'pie',
                         data:this.data,
+                        radius: '40%',
                         emphasis: {
                             itemStyle: {
                             shadowBlur: 10,

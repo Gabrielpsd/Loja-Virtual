@@ -97,6 +97,58 @@ class DashboardController extends Controller
         return response()->json($query);
     }
 
+    public function totalVendasPorSexo(Request $request)
+    {
+        $select = <<< TOTALVENDASPORSEXO
+                SELECT 
+                    CASE cliente.sexo
+                        WHEN 'F' THEN 'Feminino'
+                        WHEN 'M' THEN 'Masculino'
+                    END AS name,
+                    SUM(ordem_servico_servicos.quantidade * ordem_servico_servicos.preco) AS value
+                FROM 
+                    ordem_servico
+                JOIN cliente ON 
+                    cliente.id = ordem_servico.id_cliente
+                JOIN ordem_servico_servicos ON 
+                    ordem_servico_servicos.id_ordem_servico = ordem_servico.id
+                WHERE 
+                    ordem_servico.data BETWEEN ? AND ?
+                GROUP BY
+                    cliente.sexo
+
+        TOTALVENDASPORSEXO;
+
+        $query = DB::select($select,[ $request['data_inicial'],$request['data_final']]);
+
+        return response()->json($query);
+    }
+    
+    public function totalVendasPorCliente(Request $request)
+    {
+        $select = <<< TOTALVENDASPORCLIENTE
+                SELECT 
+                    cliente.nome as name,
+                    SUM(ordem_servico_servicos.quantidade * ordem_servico_servicos.preco) AS value
+                FROM 
+                    ordem_servico
+                JOIN cliente ON 
+                    cliente.id = ordem_servico.id_cliente
+                JOIN ordem_servico_servicos ON 
+                    ordem_servico_servicos.id_ordem_servico = ordem_servico.id
+                WHERE 
+                    ordem_servico.data BETWEEN ? AND ?
+                GROUP BY
+                    cliente.nome
+        TOTALVENDASPORCLIENTE;
+
+        $query = DB::select($select,[ $request['data_inicial'],$request['data_final']]);
+
+        return response()->json($query);
+    }
+
+
+
     public function totalServicosPorPeriodo(Request $request)
     {
         $select = <<< TOTALSERVICOSPORPERIODO

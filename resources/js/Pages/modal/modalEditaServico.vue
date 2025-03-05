@@ -4,7 +4,7 @@ import datePickerYear from '../Utils/datePickerYear.vue'
 import CpfCNPJinput from '../utils/CpfCNPJinput.vue'
 import inputText from '../Utils/inputText.vue'
 import selectListOne from '../Utils/selectListOne.vue'
-import inputFloatNumber from '../Utils/inputFloatNumber.vue'
+import inputFloatNumberManual from '../Utils/inputFloatNumberManual.vue'
 export default{
     props:{
         Servicos: Array,
@@ -24,7 +24,7 @@ export default{
         datePickerYear,
         selectListOne,
         inputText,
-        inputFloatNumber
+        inputFloatNumberManual
     },
     methods: {
         salvaAlteracoes(){
@@ -116,14 +116,14 @@ export default{
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar Serviço</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Serviço</h1>
       </div>
       <div class="modal-body">
         <div class="card border-dark mb-3" style="max-width: 18rem;" >
         <div class="card-body text-dark" >
             <inputText v-model="descricao" :maxLengh="30" :Label="'Descricao'"/>
             <p v-if="descricaoInvalida">Descricao deve ter no minimo 3 caracteres </p>
-            <inputFloatNumber v-model="preco"/>
+            <inputFloatNumberManual v-model="preco"/>
             <p v-if="precoInvalido">Preço deve ser maior que zero</p>
             <div>
                 <input type="radio" id="true" :value="false" v-model="ativo" />

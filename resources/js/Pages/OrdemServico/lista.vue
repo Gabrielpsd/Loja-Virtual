@@ -38,7 +38,6 @@ export default {
         }
     },
     methods:{
-
         editarServico(servico){
             
             const index = this.ordemServicos.findIndex( c => c.id === servico.id)
@@ -121,9 +120,9 @@ export default {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Ordem Serviços</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight ">Ordem Serviços</h2>
             <button class="btn btn-primary" @click="cadastroOrdemServico = !cadastroOrdemServico">Adicionar Serviço</button>
-        </template>
+         </template>
 
         <!-- Modals -->
         <modalEditaOrdemServico v-if="edicaoServico" :OrdemServico="ordemServicoSelecionado" :Servicos="Servicos" :Clientes="Clientes" :Veiculos="Veiculos" @fechaModal="edicaoServico = false; ordemServicoSelecionado = null" @editar="editarServico" />

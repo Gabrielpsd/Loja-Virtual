@@ -170,7 +170,7 @@ export default{
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar Cliente</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar Veiculo</h1>
       </div>
       <div class="modal-body">
         <div class="card border-dark mb-3" style="max-width: 18rem;" >

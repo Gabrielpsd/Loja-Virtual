@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://0fa9-170-0-169-82.ngrok-free.app'
+export const BASE_URL = 'http://127.0.0.1:8000'
 export const SERVICOS = `${BASE_URL}/servicos`
 export const SERVICOSAPI = `${BASE_URL}/api/servicos`
 export const VEICULOS = `${BASE_URL}/veiculos`
@@ -49,6 +49,8 @@ export default {
         totalValorPorMarca: `${DASHBOARD}/totalvalorpormarca`,
         VendasPorPeriodo: `${DASHBOARD}/vendasporperiodo`,
         totalServicosPorPeriodo: `${DASHBOARD}/totalservicosporperiodo`,
+        totalVendasPorSexo: `${DASHBOARD}/totalvendasporsexo`,
+        totalVendasPorCliente: `${DASHBOARD}/totalvendasporcliente`,
     },
     EXTENCOESVALIDAS: ['XML', 'xml', 'Xml'],
     ROTAARQUIVOS: `${BASE_URL}/api/upload`,

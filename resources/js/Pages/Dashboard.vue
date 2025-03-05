@@ -40,6 +40,17 @@
                     <VendasPorServico :data="VendasPorServico" v-if="VendasPorServico" />
                 </div>
             </div>
+            <div class="chart-row">
+                <div class="chart-col">
+                    <vendasTotalPorSexo :data="vendasTotalPorSexo" v-if="vendasTotalPorSexo" />
+                </div>
+                <div class="chart-col">
+                    <vendasPorCliente :data="vendasPorCliente" v-if="vendasPorCliente" />
+                </div>
+                <div class="chart-col">
+                   
+                </div>
+            </div>
         </div>
         <div>
             <h3> Vendas do Periodo selecionado</h3>
@@ -85,6 +96,8 @@ import totalIdadePorSexo from './Graficos/totalIdadePorSexo.vue';
 import vendasTotalPorMarca from './Graficos/vendasTotalPorMarca.vue';
 import VendasPorServico from './Graficos/VendasPorServico.vue';
 import VendasValorPorServico from './Graficos/VendasValorPorServico.vue';
+import vendasTotalPorSexo from './Graficos/vendasTotalPorSexo.vue';
+import vendasPorCliente from './Graficos/vendasPorCliente.vue';
 export default {
 
     components: {
@@ -97,8 +110,9 @@ export default {
         totalIdadePorSexo,
         vendasTotalPorMarca,
         VendasPorServico,
-        VendasValorPorServico
-
+        VendasValorPorServico,
+        vendasTotalPorSexo,
+        vendasPorCliente
     },
   data() {
     return {
@@ -112,7 +126,9 @@ export default {
         totalIdadePorSexo: null,
         ordemServico: null,
         VendasPorServico: null,
-        VendasValorPorServico: null
+        VendasValorPorServico: null,
+        vendasTotalPorSexo: null,
+        vendasPorCliente: null
     };
   },
   watch:{
@@ -197,6 +213,18 @@ export default {
                     item=>
                     ({value: item.quantidade, // Replace value with quantidade
                     name: item.name   }))
+        });
+
+        await fetch(config.dashboard.totalVendasPorSexo,parametros)
+            .then((response) => response.json())
+            .then((data) => {
+                this.vendasTotalPorSexo = data
+            });
+            
+            await fetch(config.dashboard.totalVendasPorCliente,parametros)
+            .then((response) => response.json())
+            .then((data) => {
+                this.vendasPorCliente = data
         });
 
     }

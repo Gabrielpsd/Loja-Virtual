@@ -66,11 +66,10 @@ class OrdemServicoController extends Controller
         $sql = <<< TODOSCLIENTES
                 select 
                     id,
-                    nome as descricao
+                    nome as descricao,
+                    ativado
                 from 
                     cliente
-                where 
-                    ativado = true
         TODOSCLIENTES;
 
 
@@ -80,15 +79,14 @@ class OrdemServicoController extends Controller
                  select 
                     veiculo.id,
                     veiculo.id_proprietario,
-                    marcas.descricao || ' | ' || cores.descricao || ' | ' || veiculo.placa  as descricao
+                    marcas.descricao || ' | ' || cores.descricao || ' | ' || veiculo.placa  as descricao,
+                    ativado
                 from 
                     veiculo
                 join cores on 
                     cores.id = veiculo.cor
                 join marcas on 
                     veiculo.marca = marcas.id
-                where 
-                    ativado = true
         TODOSVEICULOS;
 
 
