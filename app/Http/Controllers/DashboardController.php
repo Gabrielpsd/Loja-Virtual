@@ -53,6 +53,7 @@ class DashboardController extends Controller
             case sexo 
                 when 'M' then 'Masculino'
                 when 'F' then 'Feminino'
+                when 'E' then 'Empresa'
                 else 'Não informado'
             end as sexo, 
             coalesce(EXTRACT(YEAR FROM AGE(data_nascimento)),0) AS idade,
@@ -104,6 +105,7 @@ class DashboardController extends Controller
                     CASE cliente.sexo
                         WHEN 'F' THEN 'Feminino'
                         WHEN 'M' THEN 'Masculino'
+                        when 'E' THEN 'Empresa'
                     END AS name,
                     SUM(ordem_servico_servicos.quantidade * ordem_servico_servicos.preco) AS value
                 FROM 
@@ -158,7 +160,7 @@ class DashboardController extends Controller
                 count(ordem_servico_servicos.quantidade) as quantidade
             from 
                 ordem_servico
-            left join ordem_servico_servicos on 
+            join ordem_servico_servicos on 
                     ordem_servico_servicos.id_ordem_servico = ordem_servico.id
             left join servicos on  
                 ordem_servico_servicos.id_servico = servicos.id
@@ -216,6 +218,7 @@ class DashboardController extends Controller
                 case sexo 
                     when 'M' then 'Masculino'
                     when 'F' then 'Feminino'
+                    when 'E' then 'Empresa'     
                     else 'Não informado'
                 end as sexo
             from 

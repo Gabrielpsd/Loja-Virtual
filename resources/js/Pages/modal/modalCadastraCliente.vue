@@ -39,7 +39,7 @@ export default{
                         nome: this.nome,
                         data_nascimento: this.dataNascimento,
                         cpf_cnpj: this.cpf_cnpj.replace(/\D/g,''),
-                        sexo: this.sexo,
+                        sexo: this.cpf_cnpj.replace(/\D/g,'').length === 14 ? 'E' : this.sexo,
                     };
 
                     fetch(rotas.pessoas.inserirPessoa, {
@@ -94,8 +94,9 @@ export default{
             else
                 this.tamanhoNomeInvalido = false
 
-            if(this.sexo === null)
+            if(this.sexo === null && this.cpf_cnpj.replace(/\D/g,'').length != 14)
             {
+                console.log("to aqui")
                 this.sexoInvalido = true
                 retorno =  false
                 
@@ -121,6 +122,7 @@ export default{
             else
                 this.cpfInvalido = false
 
+            this.cpfExistente = false
             this.cadastros.forEach((item)=>{
                 if(item.cpf_cnpj == this.cpf_cnpj.replace(/\D/g,''))
                 {
@@ -167,19 +169,21 @@ export default{
             <inputText v-model="nome" :maxLengh="30" :Label="'Nome'"/>
             <p v-if="tamanhoNomeInvalido">Nome deve conter no minimo 3 caracteres </p>
             <div>
-                <h6>Sexo</h6>
-                <p v-if="sexoInvalido">Selecione o sexo do cliente</p>
-                <div>
+                <h6 v-if="!(this.cpf_cnpj.length === 18) ">Sexo</h6>
+                <h6 v-if="(this.cpf_cnpj.length === 18) " class="mt-1">Sexo n/ aplica</h6>
+                <p v-if="sexoInvalido && !(this.cpf_cnpj.length === 18)">Selecione o sexo do cliente</p>
+                <div v-if="!(this.cpf_cnpj.length === 18) ">
                     <input type="radio" id="one" value="M" v-model="sexo" />
                     <label for="one">Masculino</label>
                     <input type="radio" id="two" value="F" v-model="sexo" />
                     <label for="two">Feminino</label>
                 </div>
                 <CpfCNPJinput v-model="cpf_cnpj" :Label="'CPF/CNPJ'" @validaDados="(value)=>{this.digitosValidos=value}"/>
-                <p v-if="cpfInvalido">CFP/CNPJ incompleto</p>
                 <p v-if="cpfExistente">CPF/CNPJ já cadastrado</p>
-                <datePicker v-model="dataNascimento" :Label="'Data Nascimento'" />
-                <p v-if="dataNascimentoInvalida">Selecione uma data de nascimento</p>
+                <datePicker v-if="!(this.cpf_cnpj.length === 18) " v-model="dataNascimento" :Label="'Data Nascimento'" />
+                <p v-if="dataNascimentoInvalida && !(this.cpf_cnpj.length === 18)">Selecione uma data de nascimento</p>
+                <datePicker v-if="(this.cpf_cnpj.length === 18) " v-model="dataNascimento" :Label="'Data de Fundação'" />
+                <p v-if="dataNascimentoInvalida && (this.cpf_cnpj.length === 18)">Selecione uma data de Fundacao</p>
                 </div> 
         </div>
 

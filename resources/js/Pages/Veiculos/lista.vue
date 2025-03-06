@@ -50,7 +50,6 @@ export default {
 
         editarVeiculo(veiculo){
             const index = this.veiculos.findIndex( c => c.id === veiculo.id)
-            console.log(this.veiculos[index])
             if(index !== -1)
                 this.veiculos[index] = veiculo
 

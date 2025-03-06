@@ -10,7 +10,11 @@ export default{
         Veiculo: Object,
         Clientes: Array,
         Marcas: Array,
-        Cores: Array
+        Cores: Array,
+        ocultarCliente: {
+            type: Boolean,
+            default: false
+        },
     },
     data(){
         return{
@@ -178,8 +182,8 @@ export default{
             <inputText v-model="placa" :maxLengh="7" :Label="'Placa'"/>
             <p v-if="placaInvalida">Placa deve conter 7 caracteres </p>
             <div>
-                <h6>Proprietario</h6>
-                <selectListOne v-model="id_proprietario" :options="this.Clientes" :label="'Proprietario'"/>
+                <h6 v-if="!ocultarCliente">Proprietario</h6>
+                <selectListOne v-if="!ocultarCliente" v-model="id_proprietario" :options="this.Clientes" :label="'Proprietario'" :disabled="BloquearCliente"/>
                 <p v-if="proprietarioinvalido">Selecione um proprietario </p>
                 <h6>Cor</h6>
                 <selectListOne v-model="cor" :options="Cores" :label="'Cor'"/>

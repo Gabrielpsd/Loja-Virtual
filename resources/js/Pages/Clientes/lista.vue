@@ -9,9 +9,16 @@ import { Head } from '@inertiajs/vue3';
 import modalCadastraCliente from '../modal/modalCadastraCliente.vue';
 import modalEditaCliente from '../modal/modalEditaCliente.vue';
 import inputIntNumberDigit from '../Utils/inputIntNumberDigit.vue';
+import modalCadastraOrdemServico from '../modal/modalCadastraOrdemServico.vue';
+
 export default {
     props: {
-        Cliente: Array
+        Clientes: Array,
+        Veiculos: Array,
+        Cores:Array,
+        Marcas: Array,
+        OrdensServico: Array,
+        Servicos: Array
     },
     components:{
         AuthenticatedLayout,
@@ -22,16 +29,18 @@ export default {
         datePickerInterval,
         modalCadastraCliente,
         modalEditaCliente,
-        inputIntNumberDigit
+        inputIntNumberDigit,
+        modalCadastraOrdemServico
     },
     data(){
         return{
             id: null,
             data_nascimento: null, 
-            pessoasData: this.Cliente,
+            pessoasData: this.Clientes,
             nome: '',
             cadastroclienteAtivo: false,
             sexo: null,
+            ordensServico: this.OrdensServico,
             cpf_cnpj: '',
             baseColor: '#04d627',
             listaFiltrada: [],
@@ -40,44 +49,20 @@ export default {
             ativado: null,
             datasFiltro: null,
             clienteSelecionado: null,
-            editarCliente: false
+            ClientesOpcao: this.Clientes.map(item=>({
+                ...item,
+                descricao: item.nome,
+            })),
+            veiculos: this.Veiculos.map(item=>({
+                ...item,
+                descricao: `${item.placa} || ${item.cor} || ${item.marca}`,
+            })),
+            editarCliente: false,
+            cadastroOrdemServico: false,
+            IdSelecionado: null
         }
     },
     methods:{
-        geraGraficos(){
-
-            this.dadosGraficoPessoasPorSexo={labels: [], data:[], carregado: false, colors: [],key:0}
-            this.dadosGraficoPessoasPorIdade={labels: [], data:[], carregado: false, colors: [],key:0}
-            
-            let  filtroPorSexo  = {}
-            let  filtroPorIdade  = {}
-
-            this.listaFiltrada.forEach((element)=>{
-                filtroPorSexo[element.sexo] = (filtroPorSexo[element.sexo] || 0) + 1
-                filtroPorIdade[element.idade] = (filtroPorIdade[element.idade] || 0) + 1
-            })
-
-            for(let item of Object.entries(filtroPorSexo))
-            {
-                this.dadosGraficoPessoasPorSexo.data.push(item[1])
-                this.dadosGraficoPessoasPorSexo.labels.push(item[0])
-                if(item[0] == 'M')
-                    this.dadosGraficoPessoasPorSexo.colors.push('#0011aa')
-                if(item[0] == 'F')
-                    this.dadosGraficoPessoasPorSexo.colors.push('#f927d3')
-            }
-
-            for(let item of Object.entries(filtroPorIdade))
-            {
-                this.dadosGraficoPessoasPorIdade.data.push(item[1])
-                this.dadosGraficoPessoasPorIdade.labels.push(item[0])
-                this.dadosGraficoPessoasPorIdade.colors.push(rotas.geraCor(this.baseColor))
-            }
-
-            this.dadosGraficoPessoasPorIdade.carregado = true
-            this.dadosGraficoPessoasPorSexo.carregado = true
-        },
-
         maskedCpfCnpj(value) {
             if (!value) return "";
     
@@ -106,6 +91,7 @@ export default {
 
         editarPessoa(pessoa){
             const index = this.pessoasData.findIndex( c => c.id === pessoa.id)
+            pessoa.descricao = pessoa.nome
             if(index !== -1)
                 this.pessoasData[index] = pessoa
 
@@ -115,6 +101,26 @@ export default {
             const index = this.pessoasData.findIndex( c => c.id == cliente.id)
             this.clienteSelecionado = this.pessoasData[index]
             this.editarCliente = true
+        },
+        atualizarVeiculos(veiculo)
+        {
+            let index = this.veiculos.findIndex( obj => obj.id == veiculo.id )
+            veiculo.descricao = `${veiculo.placa} || ${veiculo.cor} || ${veiculo.marca}`
+
+            console.log(veiculo)
+            if(index !== -1)
+                this.veiculos[index] = veiculo
+        },
+        novaOrdemServico(item)
+        {
+            this.cadastroOrdemServico = true
+            this.IdSelecionado = item.id 
+        },
+        insereVeiculo(veiculo)
+        {   
+            veiculo.descricao = `${veiculo.placa} || ${veiculo.cor} || ${veiculo.marca}`
+            console.log(veiculo)
+            this.veiculos.push(veiculo)
         }
     },
     computed:{
@@ -165,16 +171,9 @@ export default {
                 return (dataNascimento >= dataInicial && dataNascimento <= dataFinal)
             })
 
-            this.listaFiltrada = items 
             return items
         },
-     },
-    watch: {
-        listaFiltrada()
-        {
-            this.geraGraficos()
-        }
-    }
+     }
 }
 </script>
 
@@ -184,12 +183,15 @@ export default {
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Clientes</h2>
-            <button class="btn btn-primary" @click="cadastroclienteAtivo = !cadastroclienteAtivo">Adicionar Cliente</button>
+            <button class="btn btn-primary" @click="cadastroclienteAtivo = !cadastroclienteAtivo">Adicionar Cliente
+            </button>
         </template>
 
+
         <!-- Modals -->
-        <modalEditaCliente v-if="editarCliente" :Cliente="clienteSelecionado" :cadastros="pessoasData" @fechaModal="editarCliente = false; clienteSelecionado = null" @editar="editarPessoa" />
+        <modalEditaCliente :Clientes="Clientes" v-if="editarCliente" :Marcas="Marcas" :Cores="Cores" :Cliente="clienteSelecionado" :Veiculos="veiculos" :cadastros="pessoasData" @fechaModal="editarCliente = false; clienteSelecionado = null" @editar="editarPessoa" @atualizarVeiculos="atualizarVeiculos" @insereVeiculo="(veiculo)=>insereVeiculo(veiculo)"/>
         <modalCadastraCliente v-if="cadastroclienteAtivo" :cadastros="pessoasData" @fechaModal="cadastroclienteAtivo = false" @adicionar="pessoa => pessoasData.push(pessoa)" />
+        <modalCadastraOrdemServico v-if="cadastroOrdemServico" :IdSelecionado="IdSelecionado" :Clientes="ClientesOpcao" :Servicos="Servicos" :Veiculos="veiculos" @fechaModal="cadastroOrdemServico = false"/>
 
         <!-- Main Content -->
         <div class="py-12">
@@ -198,7 +200,7 @@ export default {
                 <inputIntNumberDigit v-model="id" :maxLengh="4" :label="'Id'" />
                 <inputText v-model="nome" :maxLengh="30" :Label="'Nome'" />
                 <CpfCNPJinput v-model="cpf_cnpj" :Label="'CPF/CNPJ'" />
-                <selectListMultiple id="sexo" :label="'Sexo'" v-model="sexo" :options="[{ id: 'M', descricao: 'Masculino' }, { id: 'F', descricao: 'Feminino' }]" />
+                <selectListMultiple id="sexo" :label="'Sexo'" v-model="sexo" :options="[{ id: 'M', descricao: 'Masculino' }, { id: 'F', descricao: 'Feminino' }, { id: 'E', descricao: 'N/ se aplica' }]" />
                 <datePickerInterval v-model="data_nascimento" :Label="'Data nascimento'" />
                 <selectListMultiple id="Ativado" :label="'Cadastro Ativo'" v-model="ativado" :options="[{ id: true, descricao: 'Ativado' }, { id: false, descricao: 'Desativado' }]" />
             </div>
@@ -213,7 +215,6 @@ export default {
                             <th scope="col">CPF</th>
                             <th scope="col">Data Nascimento</th>
                             <th scope="col">Sexo</th>
-                            <th scope="col">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -222,9 +223,17 @@ export default {
                             <td>{{ cliente.nome }}</td>
                             <td>{{ maskedCpfCnpj(cliente.cpf_cnpj) }}</td>
                             <td>{{ maskedBirthDay(cliente.data_nascimento) }}</td>
-                            <td>{{ cliente.sexo == 'M' ? 'Masculino' : 'Feminino' }}</td>
+                            <td v-if="cliente.sexo == 'M'">Masculino</td>
+                            <td v-if="cliente.sexo == 'F'">Feminino</td>
+                            <td v-if="cliente.sexo == 'E'">Não s/ aplica</td>
                             <td>
-                                <button class="btn btn-sm btn-primary" @click="openModal(cliente)">Editar</button>
+                                <button class="btn btn-sm btn-primary mx-1" @click="openModal(cliente)">Editar</button>
+                                <button class="btn btn-sm btn-primary mx-1" :title="'Lançar ordem de serviço'" @click="novaOrdemServico(cliente)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5"/>
+                                    <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+                                </svg>
+                                </button>
                             </td>
                         </tr>
                     </tbody>

@@ -1,6 +1,6 @@
 <template>
-    <div class="demo-date-picker">
-      <div class="block">
+    <div >
+      <div class="d-flex flex-column align-items justify-content-center">
         <span class="demonstration">{{Label}}</span>
         <el-date-picker
           v-model="date"
@@ -57,28 +57,8 @@ import utils from '../Assets/ArquivosConfiguracao/apiconfig'
   </script>
   
   <style scoped>
-  .demo-date-picker {
-    display: flex;
-    width: auto;
-    padding: 0;
-    flex-wrap: wrap;
-  }
-  
-  .demo-date-picker .block {
-    text-align: center;
-    border-right: solid 1px var(--el-border-color);
-    flex: 1;
-  }
-  
-  .demo-date-picker .block:last-child {
-    border-right: none;
-  }
-  
-  .demo-date-picker .demonstration {
-    display: block;
-    font-size: 14px;
-    font-weight: bold;
-  }
+ 
+
   p{
     font-size: small;
     color: red;

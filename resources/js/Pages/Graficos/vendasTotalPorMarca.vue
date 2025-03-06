@@ -27,7 +27,7 @@ export default {
     return {
       VendasPorMarca: {
         title: {
-                    text: 'Total Vendas Por marca',
+                    text: 'Valor total vendas Por marca',
                     subtext: 'Total ',
                     left: 'center'
                 },

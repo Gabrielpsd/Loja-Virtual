@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class PessoasController extends Controller
 {
-    public function index(Request $request){
+    public function index(){
 
         $sql = <<< TODASPESSOAS
                 select 
@@ -24,15 +24,73 @@ class PessoasController extends Controller
                     cliente
         TODASPESSOAS;
 
-        $response = DB::select($sql);
+        $clientes = DB::select($sql);
+        
+        $sql = <<< TODOSVEICULOS
+                select 
+                veiculo.id,
+                veiculo.placa, 
+                veiculo.id_proprietario,
+                cliente.nome,
+                veiculo.cor as id_cor,
+                cores.descricao as cor,
+                veiculo.marca as id_marca,
+                marcas.descricao as marca,
+                veiculo.ano_fabricacao,
+                veiculo.ano_modelo
+            from 
+                veiculo
+            inner join cliente on 
+                cliente.id = veiculo.id_proprietario
+            inner join cores on 
+                cores.id = veiculo.cor
+            inner join marcas on 
+                marcas.id = veiculo.marca
+        TODOSVEICULOS;
 
-        if($request->query('JSON') == true)
-        {   
-            return response()->json($response);
-        }
+        $cars = DB::select($sql);
+
+        $sql = <<< CORES
+                select 
+                id,
+                descricao as descricao
+            from 
+                cores
+        CORES;
+
+        $cores = DB::select($sql);
+        
+        $sql = <<< MARCAS
+            select 
+                id,
+            descricao as descricao
+                from 
+            marcas
+        MARCAS;
+
+        $marcas = DB::select($sql);
+
+        $sql = <<< TODOSERVICOS
+                select 
+                    id,
+                    descricao,
+                    preco
+                from 
+                    servicos
+                where 
+                    ativado = true
+        TODOSERVICOS;
+
+        $servicos = DB::select($sql);
 
         return Inertia::render('Clientes/lista',
-        ['Cliente' => $response]);
+        [
+            'Clientes' => $clientes,
+            'Veiculos' => $cars,
+            'Cores'=>$cores,
+            'Marcas'=>$marcas,
+            'Servicos'=>$servicos
+        ]);
     }
 
     public function inserirPessoa(Request $request)

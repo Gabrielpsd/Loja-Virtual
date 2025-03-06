@@ -9,6 +9,7 @@
         @change="atualizaValor"
         popper-class="custom-header"
         style="width: 100%; max-width: 250px"
+        :disabled="disabled"
       >
         <!-- Options -->
         <el-option
@@ -43,6 +44,10 @@
       options: {
         type: Array,
         required: true,
+      },
+      disabled: {
+        type: Array,
+        required: false,
       },
     },
     data() {

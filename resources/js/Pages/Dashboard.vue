@@ -6,11 +6,11 @@
         </template>
          <!-- Options Section -->
          <div class="options">
-            <div>
+            <div class="d-flex flex-column align-items-center justify-content-center">
                 <h3>Total do periodo</h3>
                 <inputFloatNumber v-model="totalPorPerido" :disabled="true" :size="'large'"></inputFloatNumber>
             </div>
-            <div>
+            <div class="d-flex flex-column align-items-center justify-content-center">
                 <h3>Filtro de periodo</h3>
                 <datePickerInterval v-model="FiltrosData" :Label="''" :size="'large'"></datePickerInterval>
             </div>
@@ -19,37 +19,35 @@
         <!-- Charts Section -->
         <div class="charts-container">
             <div class="chart-row">
-                <div class="chart-col">
+                <div class="chart-col card">
                     <VendasPorSexo :data="vendasPorSexo" v-if="vendasPorSexo" />
                 </div>
-                <div class="chart-col">
+                <div class="chart-col card">
                     <VendasPorPeriodo :data="vendasPorPeriodo" v-if="vendasPorPeriodo" />
                 </div>
-                <div class="chart-col">
+                <div class="chart-col card">
                     <VendasValorPorServico :data="VendasValorPorServico" v-if="VendasValorPorServico" />
                 </div>
             </div>
             <div class="chart-row">
-                <div class="chart-col">
+                <div class="chart-col card">
                     <totalIdadePorSexo :data="totalIdadePorSexo" v-if="totalIdadePorSexo" />
                 </div>
-                <div class="chart-col">
+                <div class="chart-col card">
                     <vendasTotalPorMarca :data="vendasTotalPorMarca" v-if="vendasTotalPorMarca" />
                 </div>
-                <div class="chart-col">
+                <div class="chart-col card">
                     <VendasPorServico :data="VendasPorServico" v-if="VendasPorServico" />
                 </div>
             </div>
             <div class="chart-row">
-                <div class="chart-col">
+                <div class="chart-col card">
                     <vendasTotalPorSexo :data="vendasTotalPorSexo" v-if="vendasTotalPorSexo" />
                 </div>
-                <div class="chart-col">
+                <div class="chart-col card">
                     <vendasPorCliente :data="vendasPorCliente" v-if="vendasPorCliente" />
                 </div>
-                <div class="chart-col">
-                   
-                </div>
+
             </div>
         </div>
         <div>

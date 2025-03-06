@@ -8,13 +8,21 @@ export default{
     props:{
         Clientes: Array,
         Marcas: Array,
-        Cores: Array
+        Cores: Array,
+        ocultarCliente: {
+            type: Boolean,
+            required: true
+        },
+        IdProprietario: {
+            type: [Number],
+            default: null
+        }   
     },
     data(){
         return{
             placa: '',
             placaInvalida: false,
-            id_proprietario: null,
+            id_proprietario: null || this.IdProprietario,
             proprietarioinvalido: false,
             cor: null,
             corInvalida: false,
@@ -178,8 +186,8 @@ export default{
             <inputText v-model="placa" :maxLengh="7" :Label="'Placa'"/>
             <p v-if="placaInvalida">Placa deve conter 7 caracteres </p>
             <div>
-                <h6>Proprietario</h6>
-                <selectListOne v-model="id_proprietario" :options="this.Clientes" :label="'Proprietario'"/>
+                <h6 v-if="!this.IdProprietario">Proprietario</h6>
+                <selectListOne v-if="!this.IdProprietario" v-model="id_proprietario" :options="this.Clientes" :label="'Proprietario'"/>
                 <p v-if="proprietarioinvalido">Selecione um proprietario </p>
                 <h6>Cor</h6>
                 <selectListOne v-model="cor" :options="Cores" :label="'Cor'"/>

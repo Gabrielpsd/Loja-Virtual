@@ -66,10 +66,11 @@ export default {
             return `${day}/${month}/${year}`;
 
         },
-        adicionaOrdem(ordem){
-            this.ordemServicos.push(ordem)
-            this.openModal(ordem)
+        adicionaServico(item){
+            console.log("Salvando", item)
+            this.ordemServicos.push(item)
         }
+
     },
 
     computed:{
@@ -126,7 +127,7 @@ export default {
 
         <!-- Modals -->
         <modalEditaOrdemServico v-if="edicaoServico" :OrdemServico="ordemServicoSelecionado" :Servicos="Servicos" :Clientes="Clientes" :Veiculos="Veiculos" @fechaModal="edicaoServico = false; ordemServicoSelecionado = null" @editar="editarServico" />
-        <modalCadastraOrdemServico v-if="cadastroOrdemServico" :Clientes="Clientes" :Veiculos="Veiculos" @fechaModal="cadastroOrdemServico = false" @adicionar="adicionaOrdem" />
+        <modalCadastraOrdemServico v-if="cadastroOrdemServico" :Clientes="Clientes" :Servicos="Servicos" :Veiculos="Veiculos" @fechaModal="cadastroOrdemServico = false" @adicionar="(ordem)=>adicionaServico(ordem)" />
 
         <!-- Main Content -->
         <div class="py-12">

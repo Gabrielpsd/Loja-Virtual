@@ -4,9 +4,10 @@ import datePicker from '../Utils/datePicker.vue'
 import InputFloatNumber from '../Utils/inputFloatNumber.vue'
 import selectListOne from '../Utils/selectListOne.vue'
 import inputIntNumber from '../utils/inputIntNumber.vue'
-import ElInputNumber from 'element-plus'
 import inputFloatNumberManual from '../Utils/inputFloatNumberManual.vue'
+import ElInputNumber from 'element-plus'
 import inputTextLarge from '../Utils/inputTextLarge.vue'
+
 export default{
     props:{
         OrdemServico: Object,
@@ -180,7 +181,6 @@ export default{
 
             let servico =this.servicosAdicao.find( s => s.id == this.servicoSelecionadoAdicao)
             servico.quantidade = 1
-            servico.preco = 1
             this.servicos.push(servico)
             this.servicoSelecionadoAdicao = null
             this.calculaTotal()
@@ -211,6 +211,7 @@ export default{
 </script>
 <template>
     <!-- Modal -->
+   
     <div class="modal fade show modal-dialog-centered modal-xl" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -236,8 +237,8 @@ export default{
             </div>
             <div class="table-body-container">
                 
-                <h6>Adicionar Produto</h6>
-                <selectListOne v-model="servicoSelecionadoAdicao" :options="this.servicosAdicao" :label="'Servicos'"></selectListOne>
+                <h6>Adicionar serviço</h6>
+                <selectListOne v-model="servicoSelecionadoAdicao" :options="this.servicosAdicao" :label="'Servicos'"/>
                 <p v-if="nenhumSelecionado"> Os precisa ter um servico</p>
                 <table class="table table-striped table-hover">
                     <thead>

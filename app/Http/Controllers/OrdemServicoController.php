@@ -124,7 +124,23 @@ class OrdemServicoController extends Controller
                 'ativado'=> true,
                 'obs'=>$request['obs']
             ]);
+
+        $sql = <<< INSERIRSERVICOS
+                insert into 
+                    ordem_servico_servicos
+                    (id_ordem_servico,id_servico,quantidade,preco)
+                values
+                    (?,?,?,?)
+        INSERIRSERVICOS;    
+
+        $servicos = Json::decode($request['servicos']);
         
+        $id = $var->id;
+        
+        foreach($servicos as $servico)
+        {
+            DB::insert($sql,[$id,$servico['id'],$servico['quantidade'],$servico['preco']]);
+        }
             $sql = <<< TODASORDEMSERVICOS
                     select 
                     ordem_servico.id,
