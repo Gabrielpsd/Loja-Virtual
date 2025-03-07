@@ -76,10 +76,29 @@ export default {
         ],
         series: [
             {
-            name: 'Direct',
-            type: 'bar',
-            barWidth: '60%',
-            data: this.data.map( item => item.value),
+                name: 'Direct',
+                type: 'bar',
+                barWidth: '60%',
+                data: this.data.map(item=>item.value).map((item,index) => ({
+
+                    value: item,
+                    itemStyle: {
+                        color: index === 0 ? '#6495ED' : index === 1 ? '#FF69B4' : '#27e002', // Blue, Pink, Green
+                    },
+                })),
+                label: {
+                    show: true,
+                    position: ['50%','-15%'], // Display value inside the bar
+                    formatter: (params) => {
+                    return `R$ ${params.value.toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })}`;
+                    },
+                    rotate:10,
+                    color: '#000', // White text for contrast
+                    fontSize: 14,
+                },
             }
         ]
         }

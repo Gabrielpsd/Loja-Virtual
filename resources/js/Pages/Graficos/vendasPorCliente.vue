@@ -87,7 +87,21 @@ export default {
             type: 'bar',
             barWidth: '60%',
             data: this.data.map( item => item.value),
-            }
+            label: {
+                    show: true,
+                    position: ['50%','-15%'], // Display value inside the bar
+                    formatter: (params) => {
+                    return `R$ ${params.value.toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })}`;
+                    },
+                    rotate:10,
+                    color: '#000', // White text for contrast
+                    fontSize: 14,
+                },
+            },
+            
         ]
         }
     };

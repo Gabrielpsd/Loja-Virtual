@@ -36,13 +36,13 @@ const showingNavigationDropdown = ref(false);
                                     Clientes
                                 </NavLink>
                                 <NavLink :href="route('Veiculos.list')" :active="route().current('Veiculos.list')">
-                                    Veiculos
+                                    Veículos
                                 </NavLink>
                                 <NavLink :href="route('Servicos.list')" :active="route().current('Servicos.list')">
-                                    Servicos
+                                    Serviços
                                 </NavLink>
                                 <NavLink :href="route('OrdemServico.list')" :active="route().current('OrdemServico.list')">
-                                    OrdemServico
+                                    Ordem de serviço
                                 </NavLink>
                             </div>
                         </div>

@@ -26,7 +26,7 @@ export default {
     return {
       VendasPorSexo: {
         title: {
-                    text: 'Vendas Por Sexo',
+                    text: 'Quantidade de vendas por Sexo',
                     subtext: 'Total ',
                     left: 'center'
                 },
@@ -37,7 +37,7 @@ export default {
                     orient: 'vertical',
                     left: 'left'
                 },
-                color: ["#6495ED","#FF69B4"],
+                color: ["#6495ED", "#FF69B4","#27e002"],
                 series: [
                     {
                         name: 'Total venda por sexo',

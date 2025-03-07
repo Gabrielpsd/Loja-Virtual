@@ -92,10 +92,21 @@ export default {
         <!-- Main Content -->
         <div class="py-12">
             <!-- Filters Section -->
-            <div class="filters-container">
-                <inputIntNumberDigit v-model="id" :maxLengh="4" :label="'Id'" />
-                <inputText v-model="descricao" :maxLengh="30" :Label="'Descricao'" />
-                <selectListMultiple id="Ativado" :label="'Cadastro Ativo'" v-model="ativado" :options="[{ id: true, descricao: 'Ativado' }, { id: false, descricao: 'Desativado' }]" />
+            <div class="filters-container bg-white p-6 rounded-lg shadow-md mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Id</label>
+                        <inputIntNumberDigit v-model="id" :maxLengh="4" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Descrição</label>
+                        <inputText v-model="descricao" :maxLengh="30" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Cadastro Ativo</label>
+                        <selectListMultiple id="Ativado" v-model="ativado" :options="[{ id: true, descricao: 'Ativado' }, { id: false, descricao: 'Desativado' }]" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                </div>
             </div>
 
             <!-- Table Section -->
@@ -114,7 +125,7 @@ export default {
                         <tr v-for="servico in filtraBusca" :key="servico.id">
                             <th scope="row">{{ servico.id }}</th>
                             <td>{{ servico.descricao }}</td>
-                            <td>R$ {{ servico.preco }}</td>
+                            <td>R$ {{ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2 }).format(servico.preco) }}</td>
                             <td>{{ servico.ativado ? 'Ativado' : 'Desativado' }}</td>
                             <td>
                                 <button class="btn btn-sm btn-primary" @click="openModal(servico)">Editar</button>
@@ -126,7 +137,6 @@ export default {
         </div>
     </AuthenticatedLayout>
 </template>
-
 <style scoped>
 /* Base styles for filters container */
 .filters-container {

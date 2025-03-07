@@ -16,6 +16,7 @@
       <p v-if="cpfInvalido">CPF inválido</p>
       <p v-if="cnpjIncorreto">CNPJ inválido</p>
       <p v-if="cadastroIncompleto">Cadastro incompleto</p>
+      <p v-if="cpfExistente">CPF/CNPJ já cadastrado</p>
     </div>
   </template>
   
@@ -42,6 +43,9 @@
         type: Boolean,
         default: false,
         },
+      Cpfs:{
+          type: Array
+        }
 
     },
     data() {
@@ -49,7 +53,8 @@
         texto : this.modelValue,
         cpfInvalido: false,
         cnpjIncorreto: false,
-        cadastroIncompleto: false 
+        cadastroIncompleto: false,
+        cpfExistente: false
       };
     },
     methods: {
@@ -58,13 +63,13 @@
       },
       validaValor(){
 
+        console.log("to aqui")
         let valor = this.texto.replace(/\D/g,'')
         let cadastroValido = true
         if(valor.length != 11 &&  valor.length != 14)
         {
           this.cadastroIncompleto = true
           cadastroValido = false
-          return
         }else{
           this.cadastroIncompleto = false 
         }
@@ -76,9 +81,17 @@
         }
         else
         {
-
           this.cpfInvalido = false
         }
+
+        this.cpfExistente = false
+        this.Cpfs.forEach((item)=>{
+                if(item == valor)
+                {
+                    this.cpfExistente = true
+                    cadastroValido = false
+                }
+            })
 
         if(!this.validateCNPJ(valor) && valor.length == 14)
         {

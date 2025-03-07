@@ -43,7 +43,8 @@ class veiculos_controller extends Controller
         $sql = <<< PROPRIETARIOS
                 select 
                 id,
-                nome as descricao
+                nome as descricao,
+                ativado
             from 
                 cliente
         PROPRIETARIOS;
@@ -70,12 +71,25 @@ class veiculos_controller extends Controller
 
         $marcas = DB::select($sql);
 
+        $sql = <<< TODOSERVICOS
+                select 
+                    id,
+                    descricao,
+                    preco
+                from 
+                    servicos
+                where 
+                    ativado = true
+        TODOSERVICOS;
+
+        $servicos = DB::select($sql);
 
         return Inertia::render('Veiculos/lista',
         ['Veiculos' => $response,
         'Clientes'=> $clientes,
         'Cores'=>$cores,
-        'Marcas'=>$marcas]);
+        'Marcas'=>$marcas,
+        'Servicos'=>$servicos]);
     }
 
     public function inserirVeiculo(Request $request)

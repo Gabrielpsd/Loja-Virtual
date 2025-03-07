@@ -10,7 +10,7 @@
         type="textarea"
         @input="onInput"
         :size="Size"
-        style="width: auto;"
+        style="width: 500px;"
       />
     </div>
   </template>

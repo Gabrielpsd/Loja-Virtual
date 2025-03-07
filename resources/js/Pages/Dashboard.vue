@@ -7,11 +7,11 @@
          <!-- Options Section -->
          <div class="options">
             <div class="d-flex flex-column align-items-center justify-content-center">
-                <h3>Total do periodo</h3>
+                <h3>Total do período</h3>
                 <inputFloatNumber v-model="totalPorPerido" :disabled="true" :size="'large'"></inputFloatNumber>
             </div>
             <div class="d-flex flex-column align-items-center justify-content-center">
-                <h3>Filtro de periodo</h3>
+                <h3>Filtro de período</h3>
                 <datePickerInterval v-model="FiltrosData" :Label="''" :size="'large'"></datePickerInterval>
             </div>
         </div>
@@ -37,7 +37,7 @@
                     <vendasTotalPorMarca :data="vendasTotalPorMarca" v-if="vendasTotalPorMarca" />
                 </div>
                 <div class="chart-col card">
-                    <VendasPorServico :data="VendasPorServico" v-if="VendasPorServico" />
+                    <vendasPorCliente :data="vendasPorCliente" v-if="vendasPorCliente" />
                 </div>
             </div>
             <div class="chart-row">
@@ -45,15 +45,14 @@
                     <vendasTotalPorSexo :data="vendasTotalPorSexo" v-if="vendasTotalPorSexo" />
                 </div>
                 <div class="chart-col card">
-                    <vendasPorCliente :data="vendasPorCliente" v-if="vendasPorCliente" />
+                    <VendasPorServico :data="VendasPorServico" v-if="VendasPorServico" />
                 </div>
-
             </div>
         </div>
-        <div>
+        <div class="d-flex flex-column align-items-center justify-content-center">
             <h3> Vendas do Periodo selecionado</h3>
         </div>
-        <table class="table table-striped table-hover">
+        <table class="table table-striped table-hover ">
                         <thead>
                             <tr>
                                 <th scope="col">Id</th>
@@ -126,12 +125,20 @@ export default {
         VendasPorServico: null,
         VendasValorPorServico: null,
         vendasTotalPorSexo: null,
-        vendasPorCliente: null
+        vendasPorCliente: null,
+        hasReloaded: localStorage.getItem('hasReloaded') === 'true',
     };
   },
   watch:{
     FiltrosData(){
         this.requisitaDados()
+    }
+  },
+  mounted(){
+    if (!this.hasReloaded) {
+      window.location.reload();
+      localStorage.setItem('hasReloaded', 'true');
+      this.hasReloaded = true;
     }
   },
   methods:{
@@ -253,6 +260,11 @@ export default {
 
 .options > div {
     flex: 1 1 100%; /* Full width by default */
+}
+
+.table, .card{
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 /* Base styles for charts section */

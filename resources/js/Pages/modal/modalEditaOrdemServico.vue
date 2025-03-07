@@ -167,7 +167,9 @@ export default{
             this.servicos = this.servicos.filter( s => s.id != servico.id)
             this.calculaTotal()
             this.removeRepetidos()
+            console.log(servico)
             this.servicosAdicao.push(servico)
+            this.servicoSelecionadoAdicao = null
         }
 
     },
@@ -212,8 +214,8 @@ export default{
 <template>
     <!-- Modal -->
    
-    <div class="modal fade show modal-dialog-centered modal-xl" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog">
+    <div class="modal fade show modal-dialog-centered" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog  modal-xl">
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalLabel">Editando Ordem de Servico</h1>
@@ -222,7 +224,7 @@ export default{
                 <div class="card border-dark mb-5">
                 <div class="card-body text-dark d-flex flex-column align-items-center justify-content-center text-center">
                     <h6>Selecione Cliente</h6>
-                    <selectListOne v-model="cliente" :options="this.Clientes" :label="'Clientes'"></selectListOne>
+                    <selectListOne v-model="cliente" :options="this.Clientes" :label="'Clientes'" :disabled="true"></selectListOne>
                     <p v-if="clienteInvalido">Selecione um cliente</p>
                     <h6>Selecione Veiculo</h6>
                     <selectListOne v-model="veiculo" :options="veiculosCliente" :label="'Veiculos'"></selectListOne>
@@ -238,7 +240,7 @@ export default{
             <div class="table-body-container">
                 
                 <h6>Adicionar serviço</h6>
-                <selectListOne v-model="servicoSelecionadoAdicao" :options="this.servicosAdicao" :label="'Servicos'"/>
+                <selectListOne v-model="servicoSelecionadoAdicao" :resetarAoSelecionar="true" :options="this.servicosAdicao" :label="'Servicos'"/>
                 <p v-if="nenhumSelecionado"> Os precisa ter um servico</p>
                 <table class="table table-striped table-hover">
                     <thead>
@@ -258,7 +260,7 @@ export default{
                         <td>
                       <!-- Button to open modal -->
                       <button class="btn btn-sm btn-primary" @click="removeServico(servico)">
-                        <img width="10" height="10" src="../Assets/trash.png" alt="trash"/> </button>
+                        <img width="20" height="20" src="../Assets/trash.png" alt="trash"/> </button>
                     </td>
                   </tr>
                 </tbody>
@@ -290,5 +292,7 @@ p{
   max-height: 300px; /* Adjust the height of tbody */
   overflow-y: auto;
 }
-
+.modal-xl{
+    width: 600px !important;
+}
 </style>

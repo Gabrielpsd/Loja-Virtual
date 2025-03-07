@@ -14,23 +14,29 @@ export default {
         IdSelecionado: {
             type: Number,
             default: null
+        },
+        idVeiculoSelecionado: {
+            type: Number,
+            default: null
         }
     },
     data() {
         return {
             clientesOptions: this.Clientes.filter(d => d.ativado == true),
             veiculosOtions: this.Veiculos.filter(d => d.ativado == true),
-            cliente: this.IdSelecionado || null ,
+            cliente: this.IdSelecionado,
             clienteInvalido: false,
-            veiculo: null,
+            veiculo: this.idVeiculoSelecionado,
             veiculoInvalido: false,
-            data: null,
+            data: new Date().toISOString().split('T')[0],
             dataInvalida: false,
             loading: false,
             obs: '',
             servicosAdicao: this.Servicos,
             servicos: [],
-            servicoSelecionadoAdicao: null
+            servicoSelecionadoAdicao: null,
+            clienteSelecionado: this.IdSelecionado != null ? true : false,
+            veiculoSelecionado: this.idVeiculoSelecionado != null ? true : false
         };
     },
     components: {
@@ -186,6 +192,7 @@ export default {
             this.calculaTotal()
             this.removeRepetidos()
             this.servicosAdicao.push(servico)
+            this.servicoSelecionadoAdicao = null
         }
     },
     computed: {
@@ -232,10 +239,10 @@ export default {
         <div class="card  border-dark mb-3 w-100" >
             <div class="card-body" >
                 <h6> Selecione Cliente</h6>
-                <selectListOne v-model="cliente" :options="clientesOptions" :label="'Clientes'" :disabled="true"></selectListOne>
+                <selectListOne v-model="cliente" :options="clientesOptions" :label="'Clientes'" :disabled="clienteSelecionado"></selectListOne>
                 <p v-if="clienteInvalido"> Selecione um cliente</p>
                 <h6> Selecione Veiculo</h6>
-                <selectListOne v-model="veiculo" :options="veiculosCliente" :label="'Veiculos'"></selectListOne>
+                <selectListOne v-model="veiculo" :options="veiculosCliente" :label="'Veiculos'" :disabled="veiculoSelecionado"></selectListOne>
                 <p v-if="veiculoInvalido"> Selecione um veiculo</p>
                 <datePicker v-model="data" :Label="'Data servico'"/>
                 <p v-if="dataInvalida"> Selecione uma data</p>
@@ -246,10 +253,10 @@ export default {
                 
             </div>
         </div>
-        <div class="table-body-container">
+        <div class="table-body-container ">
                 
                 <h6>Adicionar serviço</h6>
-                <selectListOne v-model="servicoSelecionadoAdicao" :options="this.servicosAdicao" :label="'Servicos'"/>
+                <selectListOne v-model="servicoSelecionadoAdicao" :resetarAoSelecionar="true" :options="this.servicosAdicao" :label="'Servicos'" :key="this.servicos.length"/>
                 <p v-if="nenhumSelecionado"> Os precisa ter um servico</p>
                 <table class="table table-striped table-hover">
                     <thead>
@@ -265,11 +272,11 @@ export default {
                         <th scope="row">{{servico.descricao}}</th>
                         <td> <inputIntNumber v-model="servico.quantidade" /></td>
                         <td><inputFloatNumberManual v-model="servico.preco" /></td>
-                        <td style="width: 150px">R$ {{(servico.preco * servico.quantidade).toFixed(2) }}</td>
+                        <td style="width: 150px">R$ {{ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2 }).format((servico.preco * servico.quantidade)) }}</td>
                         <td>
                       <!-- Button to open modal -->
                       <button class="btn btn-sm btn-primary" @click="removeServico(servico)">
-                        <img width="10" height="10" src="../Assets/trash.png" alt="trash"/> </button>
+                        <img width="20" height="20" src="../Assets/trash.png" alt="trash"/> </button>
                     </td>
                   </tr>
                 </tbody>

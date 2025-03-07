@@ -59,6 +59,11 @@ export default {
             data:this.data.map( item => item.name),
             axisTick: {
                 alignWithLabel: true
+            },
+            axisLabel: {
+                interval: 0, // Force all labels to show
+                rotate: 45,  // Prevents overlap
+                fontSize: 10 // Adjust text size
             }
             }
         ],

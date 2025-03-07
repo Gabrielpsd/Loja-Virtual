@@ -115,15 +115,14 @@ export default {
 
 }
 </script>
-
 <template>
-    <Head title="Servicos" />
+    <Head title="Ordem Servico" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight ">Ordem Serviços</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Ordem Serviços</h2>
             <button class="btn btn-primary" @click="cadastroOrdemServico = !cadastroOrdemServico">Adicionar Serviço</button>
-         </template>
+        </template>
 
         <!-- Modals -->
         <modalEditaOrdemServico v-if="edicaoServico" :OrdemServico="ordemServicoSelecionado" :Servicos="Servicos" :Clientes="Clientes" :Veiculos="Veiculos" @fechaModal="edicaoServico = false; ordemServicoSelecionado = null" @editar="editarServico" />
@@ -132,11 +131,25 @@ export default {
         <!-- Main Content -->
         <div class="py-12">
             <!-- Filters Section -->
-            <div class="filters-container">
-                <inputIntNumberDigit v-model="id" :maxLengh="4" :label="'Id'" />
-                <selectListMultiple id="Cliente" :label="'Cliente'" v-model="clientes" :options="Clientes" />
-                <selectListMultiple id="Veiculo" :label="'Veiculo'" v-model="veiculos" :options="Veiculos" />
-                <datePickerInterval v-model="datasFiltro" :Label="'Data do Servico'" />
+            <div class="filters-container bg-white p-6 rounded-lg shadow-md mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Id</label>
+                        <inputIntNumberDigit v-model="id" :maxLengh="4" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Cliente</label>
+                        <selectListMultiple id="Cliente" v-model="clientes" :options="Clientes" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Veículo</label>
+                        <selectListMultiple id="Veiculo" v-model="veiculos" :options="Veiculos" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Data do Serviço</label>
+                        <datePickerInterval v-model="datasFiltro" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                </div>
             </div>
 
             <!-- Table Section -->
@@ -158,7 +171,7 @@ export default {
                             <td>{{ ordemServico.nome }}</td>
                             <td>{{ ordemServico.descricao_veiculo }}</td>
                             <td>{{ maskedDate(ordemServico.data) }}</td>
-                            <td>R$ {{ calculaTotal(ordemServico.servicos).toFixed(2) }}</td>
+                            <td>R$ {{ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2 }).format(calculaTotal(ordemServico.servicos)) }}</td>
                             <td>
                                 <button class="btn btn-sm btn-primary" @click="openModal(ordemServico)">Editar</button>
                             </td>

@@ -176,17 +176,14 @@ export default {
      }
 }
 </script>
-
 <template>
-    <Head title="Dashboard" />
+    <Head title="Clientes" />
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Clientes</h2>
-            <button class="btn btn-primary" @click="cadastroclienteAtivo = !cadastroclienteAtivo">Adicionar Cliente
-            </button>
+            <button class="btn btn-primary" @click="cadastroclienteAtivo = !cadastroclienteAtivo">Adicionar Cliente</button>
         </template>
-
 
         <!-- Modals -->
         <modalEditaCliente :Clientes="Clientes" v-if="editarCliente" :Marcas="Marcas" :Cores="Cores" :Cliente="clienteSelecionado" :Veiculos="veiculos" :cadastros="pessoasData" @fechaModal="editarCliente = false; clienteSelecionado = null" @editar="editarPessoa" @atualizarVeiculos="atualizarVeiculos" @insereVeiculo="(veiculo)=>insereVeiculo(veiculo)"/>
@@ -196,13 +193,33 @@ export default {
         <!-- Main Content -->
         <div class="py-12">
             <!-- Filters Section -->
-            <div class="filters-container">
-                <inputIntNumberDigit v-model="id" :maxLengh="4" :label="'Id'" />
-                <inputText v-model="nome" :maxLengh="30" :Label="'Nome'" />
-                <CpfCNPJinput v-model="cpf_cnpj" :Label="'CPF/CNPJ'" />
-                <selectListMultiple id="sexo" :label="'Sexo'" v-model="sexo" :options="[{ id: 'M', descricao: 'Masculino' }, { id: 'F', descricao: 'Feminino' }, { id: 'E', descricao: 'N/ se aplica' }]" />
-                <datePickerInterval v-model="data_nascimento" :Label="'Data nascimento'" />
-                <selectListMultiple id="Ativado" :label="'Cadastro Ativo'" v-model="ativado" :options="[{ id: true, descricao: 'Ativado' }, { id: false, descricao: 'Desativado' }]" />
+            <div class="filters-container bg-white p-6 rounded-lg shadow-md mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Id</label>
+                        <inputIntNumberDigit v-model="id" :maxLengh="4" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Nome</label>
+                        <inputText v-model="nome" :maxLengh="30" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">CPF/CNPJ</label>
+                        <CpfCNPJinput v-model="cpf_cnpj" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Sexo</label>
+                        <selectListMultiple id="sexo" v-model="sexo" :options="[{ id: 'M', descricao: 'Masculino' }, { id: 'F', descricao: 'Feminino' }, { id: 'E', descricao: 'N/ se aplica' }]" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Data Nascimento</label>
+                        <datePickerInterval v-model="data_nascimento" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Cadastro Ativo</label>
+                        <selectListMultiple id="Ativado" v-model="ativado" :options="[{ id: true, descricao: 'Ativado' }, { id: false, descricao: 'Desativado' }]" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                </div>
             </div>
 
             <!-- Table Section -->
@@ -215,6 +232,7 @@ export default {
                             <th scope="col">CPF</th>
                             <th scope="col">Data Nascimento</th>
                             <th scope="col">Sexo</th>
+                            <th scope="col">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -230,9 +248,9 @@ export default {
                                 <button class="btn btn-sm btn-primary mx-1" @click="openModal(cliente)">Editar</button>
                                 <button class="btn btn-sm btn-primary mx-1" :title="'Lançar ordem de serviço'" @click="novaOrdemServico(cliente)">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5"/>
-                                    <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
-                                </svg>
+                                        <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5"/>
+                                        <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+                                    </svg>
                                 </button>
                             </td>
                         </tr>
@@ -242,7 +260,6 @@ export default {
         </div>
     </AuthenticatedLayout>
 </template>
-
 <style scoped>
 
 .py-12 {

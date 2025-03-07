@@ -16,10 +16,10 @@ export default{
             cpfInvalido: false,
             sexo: null,
             dataNascimento: null,
-            cpfExistente: false,
             loading: false,
             sexoInvalido: false,
-            digitosValidos: false
+            digitosValidos: false,
+            cpfs: this.cadastros.map(item=>item.cpf_cnpj)
           }
     },
     components:{
@@ -57,6 +57,7 @@ export default{
                         return response.json(); // Parse JSON response
                     })
                     .then(data => {
+                        data.descricao = data.nome
                         this.$emit('adicionar', data); // Emit the 'editar' event with the response data
                     })
                     .catch(error => {
@@ -74,7 +75,6 @@ export default{
         {   
             
             let retorno = true
-            this.cpfInvalido = false
             this.tamanhoNomeInvalido = false
 
             if(this.dataNascimento == null)
@@ -96,41 +96,14 @@ export default{
 
             if(this.sexo === null && this.cpf_cnpj.replace(/\D/g,'').length != 14)
             {
-                console.log("to aqui")
                 this.sexoInvalido = true
                 retorno =  false
-                
             }
             else
                 this.sexoInvalido = false
+
+            retorno = this.cpfInvalido
             
-            if(this.cpf_cnpj.replace(/\D/g,'').length != 14 && this.cpf_cnpj.replace(/\D/g,'').length != 11 )
-            {
-                this.cpfInvalido = true
-                retorno = false
-                
-            }
-            else
-                this.cpfInvalido = false
-
-            if(!this.digitosValidos)
-            {
-                this.cpfInvalido = true
-                retorno = false
-                
-            }
-            else
-                this.cpfInvalido = false
-
-            this.cpfExistente = false
-            this.cadastros.forEach((item)=>{
-                if(item.cpf_cnpj == this.cpf_cnpj.replace(/\D/g,''))
-                {
-                    this.cpfExistente = true
-                    retorno = false
-                }
-            })
-
             return retorno 
         },
 
@@ -170,7 +143,6 @@ export default{
             <p v-if="tamanhoNomeInvalido">Nome deve conter no minimo 3 caracteres </p>
             <div>
                 <h6 v-if="!(this.cpf_cnpj.length === 18) ">Sexo</h6>
-                <h6 v-if="(this.cpf_cnpj.length === 18) " class="mt-1">Sexo n/ aplica</h6>
                 <p v-if="sexoInvalido && !(this.cpf_cnpj.length === 18)">Selecione o sexo do cliente</p>
                 <div v-if="!(this.cpf_cnpj.length === 18) ">
                     <input type="radio" id="one" value="M" v-model="sexo" />
@@ -178,8 +150,7 @@ export default{
                     <input type="radio" id="two" value="F" v-model="sexo" />
                     <label for="two">Feminino</label>
                 </div>
-                <CpfCNPJinput v-model="cpf_cnpj" :Label="'CPF/CNPJ'" @validaDados="(value)=>{this.digitosValidos=value}"/>
-                <p v-if="cpfExistente">CPF/CNPJ já cadastrado</p>
+                <CpfCNPJinput v-model="cpf_cnpj" :Label="'CPF/CNPJ'" :Cpfs="this.cpfs" @validaDados="(item)=>this.cpfInvalido = item" />
                 <datePicker v-if="!(this.cpf_cnpj.length === 18) " v-model="dataNascimento" :Label="'Data Nascimento'" />
                 <p v-if="dataNascimentoInvalida && !(this.cpf_cnpj.length === 18)">Selecione uma data de nascimento</p>
                 <datePicker v-if="(this.cpf_cnpj.length === 18) " v-model="dataNascimento" :Label="'Data de Fundação'" />

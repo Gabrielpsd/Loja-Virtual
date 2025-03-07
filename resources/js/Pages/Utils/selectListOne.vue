@@ -49,6 +49,10 @@
         type: Array,
         required: false,
       },
+      resetarAoSelecionar:{
+        type: Boolean,
+        default: false
+      }
     },
     data() {
       return {
@@ -58,12 +62,17 @@
     methods: {
       atualizaValor() {
         this.$emit("update:modelValue",this.selection);
+
+        console.log(this.resetarAoSelecionar)
+        console.log(this.selection)
+        if(this.resetarAoSelecionar)
+          this.selection = null
       },
     },
     watch: {
       // Watch for changes in modelValue from the parent and update selection
       modelValue(newValue) {
-        this.selection = newValue;
+        this.selection = newValue  ? newValue.id : null;
       },
     },
   };

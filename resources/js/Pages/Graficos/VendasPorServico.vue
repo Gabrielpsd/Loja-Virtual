@@ -1,6 +1,5 @@
 <template>
     <div >
-        <h4>Vendas por serviço</h4>
         <v-chart :option="vendasPorServico" class="chart-container" />
     </div>
 </template>
@@ -26,8 +25,10 @@ export default {
   data() {
     return {
       vendasPorServico: {
-            title: {
-                    left: 'center'
+                title: {
+                    text: 'Quantidade de vendas por serviços',
+                    subtext: 'Total ',
+                    left: 'right'
                 },
                 tooltip: {
                     trigger: 'item'

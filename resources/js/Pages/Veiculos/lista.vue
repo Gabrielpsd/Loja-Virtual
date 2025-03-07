@@ -9,13 +9,15 @@ import modalCadastraVeiculo from '../modal/modalCadastraVeiculo.vue';
 import modalEditaVeiculo from '../modal/modalEditaVeiculo.vue';
 import inputIntNumberDigit from '../Utils/inputIntNumberDigit.vue';
 import datePickerYear from '../Utils/datePickerYear.vue';
+import modalCadastraOrdemServico from '../modal/modalCadastraOrdemServico.vue';
 
 export default {
     props: {
         Veiculos: Array,
         Cores: Array,
         Marcas: Array,
-        Clientes: Array
+        Clientes: Array,
+        Servicos: Array
     },
     components:{
         AuthenticatedLayout,
@@ -26,7 +28,8 @@ export default {
         datePickerYear,
         modalCadastraVeiculo,
         modalEditaVeiculo,
-        inputIntNumberDigit
+        inputIntNumberDigit,
+        modalCadastraOrdemServico
     },
     data(){
         return{
@@ -43,7 +46,14 @@ export default {
             AnoFabricacao: null,
             AnoModelo: null,
             clienteSelecionado: null,
-            edicaoVeiculo: false
+            edicaoVeiculo: false,
+            cadastroOrdemServico: false,
+            veiculoSelecionado: null,
+            ClientesOpcao: this.Clientes,
+            veiculos: this.Veiculos.map(item=>({
+                ...item,
+                descricao: `${item.placa} || ${item.cor} || ${item.marca}`,
+            })),
         }
     },
     methods:{
@@ -53,6 +63,15 @@ export default {
             if(index !== -1)
                 this.veiculos[index] = veiculo
 
+        },
+        novaOrdemServico(item)
+        {
+            console.log(item)
+            console.log(this.ClientesOpcao)
+            console.log(this.veiculos)
+            this.cadastroOrdemServico = true
+            this.IdSelecionado = item.id_proprietario 
+            this.veiculoSelecionado =item.id
         },
         openModal(veiculo){
             const index = this.veiculos.findIndex( c => c.id == veiculo.id)
@@ -142,18 +161,42 @@ export default {
         <!-- Modals -->
         <modalEditaVeiculo v-if="edicaoVeiculo" :Veiculo="veiculoSelecionado" :Clientes="Clientes" :Marcas="Marcas" :Cores="Cores" @fechaModal="edicaoVeiculo = false; veiculoSelecionado = null" @editar="editarVeiculo" />
         <modalCadastraVeiculo v-if="cadastroVeiculoAtivo" :Clientes="Clientes" :Marcas="Marcas" :Cores="Cores" @fechaModal="cadastroVeiculoAtivo = false" @adicionar="veiculo => veiculos.push(veiculo)" />
+        <modalCadastraOrdemServico v-if="cadastroOrdemServico" :IdSelecionado="IdSelecionado" :idVeiculoSelecionado="veiculoSelecionado" :Clientes="ClientesOpcao" :Servicos="Servicos" :Veiculos="veiculos" @fechaModal="cadastroOrdemServico = false"/>
 
         <!-- Main Content -->
         <div class="py-12">
             <!-- Filters Section -->
-            <div class="filters-container">
-                <inputIntNumberDigit v-model="id" :maxLengh="4" :label="'Id Veiculo'" />
-                <inputText v-model="placa" :maxLengh="7" :Label="'Placa'" />
-                <selectListMultiple id="proprietario" :label="'Proprietario'" v-model="proprietario" :options="Clientes" />
-                <selectListMultiple id="cores" :label="'Cores'" v-model="cor" :options="Cores" />
-                <selectListMultiple id="marcas" :label="'Marcas'" v-model="marca" :options="Marcas" />
-                <datePickerYear v-model="AnoFabricacao" :Label="'Ano Fabricacao'" />
-                <datePickerYear v-model="AnoModelo" :Label="'Ano Modelo'" />
+            <div class="filters-container bg-white p-6 rounded-lg shadow-md mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Id Veiculo</label>
+                        <inputIntNumberDigit v-model="id" :maxLengh="4" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Placa</label>
+                        <inputText v-model="placa" :maxLengh="7" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Proprietario</label>
+                        <selectListMultiple id="proprietario" v-model="proprietario" :options="Clientes" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Cores</label>
+                        <selectListMultiple id="cores" v-model="cor" :options="Cores" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Marcas</label>
+                        <selectListMultiple id="marcas" v-model="marca" :options="Marcas" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Ano Fabricação</label>
+                        <datePickerYear v-model="AnoFabricacao" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Ano Modelo</label>
+                        <datePickerYear v-model="AnoModelo" class="w-full mt-1 p-2 border rounded-md" />
+                    </div>
+                </div>
             </div>
 
             <!-- Table Section -->
@@ -182,6 +225,12 @@ export default {
                             <td>{{ veiculo.ano_modelo }}</td>
                             <td>
                                 <button class="btn btn-sm btn-primary" @click="openModal(veiculo)">Editar</button>
+                                <button class="btn btn-sm btn-primary mx-1" :title="'Lançar ordem de serviço'" @click="novaOrdemServico(veiculo)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5"/>
+                                        <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+                                    </svg>
+                                </button>
                             </td>
                         </tr>
                     </tbody>
